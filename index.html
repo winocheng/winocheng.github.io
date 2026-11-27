@@ -7,86 +7,173 @@
 <title>Probability, one variable at a time | Chapters 6–7</title>
 <style>
   :root {
-    --ink: #17262f; --muted: #4c6272; --navy: #143a73; --teal: #006a70;
-    --wash: #f3f6fa; --line: #cddbe7; --blue: #eaf1fa; --mint: #e5f4f1;
+    --ink: #17262f; --ink-soft: #2c3e4c; --muted: #4c6272;
+    --navy: #143a73; --navy-dark: #0c254a; --teal: #006a70; --teal-bright: #008f96;
+    --wash: #f3f6fa; --line: #cddbe7; --line-strong: #a7bece;
+    --blue: #eaf1fa; --mint: #e5f4f1;
+    --amber: #8f4900; --amber-bg: #fff4db;
+    --red: #a61b1b; --red-bg: #fde8e8;
+    --green: #086641; --green-bg: #dcf7ea;
+    --purple: #5423c7; --purple-bg: #ede9fe;
+    --shadow-sm: 0 2px 8px rgba(20, 58, 115, 0.06);
+    --shadow-md: 0 8px 22px rgba(23, 38, 47, 0.08);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
     --nav-height: 60px;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body { margin: 0; background: var(--wash); color: var(--ink); font: 1rem/1.62 system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", "PingFang HK", "Noto Sans TC", sans-serif; }
-  .wrap { width: min(1060px, calc(100% - 2rem)); margin-inline: auto; }
-  .skip { position: absolute; top: .5rem; left: .5rem; transform: translateY(-200%); z-index: 3; background: white; padding: .5rem; }
+  .wrap { width: min(1080px, calc(100% - 2rem)); margin-inline: auto; }
+  .skip { position: absolute; top: .5rem; left: .5rem; transform: translateY(-200%); z-index: 30; background: white; padding: .5rem .75rem; border: 2px solid var(--navy); border-radius: .4rem; font-weight: 700; }
   .skip:focus { transform: none; }
   a { color: var(--navy); }
-  :focus-visible { outline: 3px solid #007f85; outline-offset: 3px; }
-  header { background: #102b51; color: white; padding: clamp(2rem, 6vw, 4.2rem) 0 2.4rem; border-top: 6px solid #3cc5b9; }
-  h1, h2, h3 { line-height: 1.17; text-wrap: balance; }
-  h1 { font-size: clamp(2.15rem, 6vw, 4.2rem); letter-spacing: -.05em; max-width: 17ch; margin: .6rem 0 1rem; }
-  h2 { font-size: clamp(1.55rem, 3.2vw, 2.25rem); color: var(--navy); letter-spacing: -.025em; margin: .28rem 0 .65rem; }
-  h3 { font-size: 1.125rem; margin: 0 0 .5rem; }
+  :focus-visible { outline: 3px solid var(--teal-bright); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .num { font-variant-numeric: tabular-nums; }
+  header { background: linear-gradient(135deg, #0d2547 0%, #143a73 100%); color: white; padding: clamp(2rem, 5.5vw, 3.8rem) 0 2.2rem; border-top: 6px solid #3cc5b9; }
+  h1, h2, h3, h4 { line-height: 1.18; text-wrap: balance; }
+  h1 { font-size: clamp(2.15rem, 5.6vw, 3.9rem); letter-spacing: -.045em; max-width: 18ch; margin: .55rem 0 .9rem; }
+  h2 { font-size: clamp(1.5rem, 3.1vw, 2.15rem); color: var(--navy); letter-spacing: -.02em; margin: .28rem 0 .65rem; }
+  h3 { font-size: 1.125rem; color: var(--navy); margin: 0 0 .5rem; }
+  h4 { font-size: .98rem; color: var(--ink); margin: 0 0 .35rem; }
   p { margin: .5rem 0 .85rem; }
   p:last-child { margin-bottom: 0; }
-  .eyebrow { font-size: .77rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin: 0; }
+  .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .11em; text-transform: uppercase; color: var(--teal); margin: 0; }
   header .eyebrow { color: #a9e7e1; }
-  .lead { max-width: 66ch; font-size: 1.12rem; }
-  header .lead { color: #e0ebf9; }
-  .nav { position: sticky; top: 0; z-index: 2; background: #fff; border-bottom: 1px solid var(--line); }
-  .nav .wrap { display: flex; flex-wrap: wrap; gap: .25rem .4rem; padding-block: .4rem; }
-  .nav a { flex-shrink: 0; padding: .35rem .55rem; text-decoration: none; font-size: .875rem; font-weight: 700; border-radius: .35rem; }
-  .nav a:hover, .nav a[aria-current] { background: var(--blue); text-decoration: underline; text-underline-offset: .25em; }
-  main { padding-block: 1.75rem 2rem; }
+  .lead { max-width: 68ch; font-size: 1.1rem; color: var(--ink-soft); }
+  header .lead { color: #e4eefb; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+  .pill { display: inline-flex; align-items: center; gap: .35rem; border-radius: 999px; padding: .22rem .68rem; font-size: .78rem; font-weight: 700; line-height: 1.35; }
+  .pill.navy { background: var(--blue); color: var(--navy); }
+  .pill.teal { background: var(--mint); color: var(--teal); }
+  .pill.amber { background: var(--amber-bg); color: var(--amber); }
+  .pill.green { background: var(--green-bg); color: var(--green); }
+  .pill.red { background: var(--red-bg); color: var(--red); }
+  .pill.purple { background: var(--purple-bg); color: var(--purple); }
+  header .pill { background: rgba(255,255,255,0.14); color: #eef7ff; border: 1px solid rgba(255,255,255,0.22); }
+  .nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); box-shadow: 0 2px 8px rgba(16,43,81,0.05); }
+  .nav .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .4rem; padding-block: .4rem; }
+  .nav a { flex-shrink: 0; padding: .35rem .6rem; text-decoration: none; font-size: .875rem; font-weight: 700; border-radius: .38rem; transition: background-color 160ms var(--ease), color 160ms var(--ease); }
+  .nav a:hover, .nav a[aria-current] { background: var(--blue); color: var(--navy-dark); text-decoration: underline; text-underline-offset: .25em; }
+  main { padding-block: 1.65rem 2.2rem; }
   section, #main { scroll-margin-top: calc(var(--nav-height) + 1rem); }
-  section { margin-block: 1.2rem; padding: clamp(1rem, 3vw, 2rem); background: white; border: 1px solid var(--line); border-radius: 1rem; }
-  .intro, .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
-  .intro > *, .tile, .example, .tip, .lab { padding: .9rem 1rem; border-radius: .65rem; }
+  section { margin-block: 1.3rem; padding: clamp(1rem, 3vw, 2rem); background: white; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow-sm); }
+  .intro, .grid, .lab-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .95rem; }
+  .intro > *, .grid > *, .lab-split > * { min-width: 0; }
+  .intro > *, .tile, .example, .tip, .lab { padding: .95rem 1.05rem; border-radius: .72rem; }
   .intro > *, .tile { border: 1px solid var(--line); background: white; }
-  .intro strong { display: block; color: var(--navy); }
-  .example { background: var(--blue); margin-block: .9rem; }
-  .tip { background: #fff5df; border-left: 4px solid #a26309; margin-block: .9rem; }
-  .lab { background: var(--mint); border: 1px solid #9abfbc; margin-block: 1rem; }
-  .formula { font-family: Cambria, Georgia, serif; font-size: 1.13em; color: #143764; overflow-wrap: anywhere; }
+  .intro strong { display: block; color: var(--navy); margin-bottom: .2rem; }
+  .example { background: var(--blue); margin-block: .9rem; border: 1px solid #d0e0f3; }
+  .tip { background: #fff6e3; border-left: 4px solid #b56c09; margin-block: .9rem; }
+  .lab { background: linear-gradient(180deg, #f4fbfa 0%, #ebf6f4 100%); border: 1.5px solid var(--line-strong); margin-block: 1.1rem; box-shadow: var(--shadow-md); }
+  .lab-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: .5rem .8rem; margin-bottom: .75rem; padding-bottom: .65rem; border-bottom: 1px solid #c7dcd9; }
+  .lab-head h3 { margin: .15rem 0 0; }
+  .formula { font-family: Cambria, Georgia, serif; font-size: 1.11em; color: #143764; overflow-wrap: anywhere; }
   .mathline { display: block; margin-block: .45rem; }
-  .small { font-size: .92rem; color: var(--muted); }
+  .small { font-size: .9rem; color: var(--muted); }
   .grid, .table-wrap { margin-block: .9rem; }
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; background: white; font-variant-numeric: tabular-nums; }
-  caption { text-align: left; font-weight: 700; padding-bottom: .35rem; }
-  th, td { padding: .45rem .6rem; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+  caption { text-align: left; font-weight: 700; padding-bottom: .35rem; color: var(--navy); }
+  th, td { padding: .46rem .62rem; border: 1px solid var(--line); text-align: left; vertical-align: top; transition: background-color 220ms var(--ease), color 220ms var(--ease), box-shadow 220ms var(--ease); }
   thead th { background: var(--blue); color: var(--navy); }
   .prob th:not(:first-child), .prob td { text-align: right; }
-  .prob .lit { background: #d3ebe6; color: #06464a; box-shadow: inset 0 -3px #007a77; font-weight: 750; }
-  fieldset { border: 0; padding: 0; margin: .6rem 0; min-width: 0; }
-  legend { font-weight: 700; padding: 0; }
-  .btn-group { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .35rem; }
-  button { font: inherit; color: var(--navy); font-weight: 700; background: white; border: 1px solid #8da6b6; border-radius: .4rem; padding: .35rem .7rem; min-height: 40px; cursor: pointer; }
-  button[aria-pressed="true"] { background: var(--navy); color: white; border-color: var(--navy); }
-  button:hover { text-decoration: underline; }
-  output { display: block; min-height: 3.3em; }
+  .prob .lit { background: #cdece6; color: #053e42; box-shadow: inset 0 -3px #007a77; font-weight: 750; }
+  fieldset { border: 0; padding: 0; margin: .55rem 0; min-width: 0; }
+  legend { font-weight: 700; padding: 0; font-size: .92rem; color: var(--ink); }
+  .btn-group { display: flex; flex-wrap: wrap; gap: .42rem; margin-top: .35rem; }
+  button { font: inherit; font-size: .9rem; color: var(--navy); font-weight: 700; background: white; border: 1px solid #86a2b5; border-radius: .45rem; padding: .38rem .74rem; min-height: 40px; cursor: pointer; transition: background-color 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease), transform 120ms var(--ease); }
+  button:hover { background: var(--blue); border-color: var(--navy); }
+  button:active { transform: translateY(1px); }
+  button[aria-pressed="true"], button.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .play-btn { background: var(--teal); color: white; border-color: var(--teal); }
+  .play-btn:hover { background: #005459; color: white; border-color: #005459; }
+  .play-btn[aria-pressed="true"] { background: #8f4900; border-color: #8f4900; color: white; }
+  .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-block: .6rem; }
+  .slider-group { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: .22rem; }
+  .slider-label { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; font-size: .9rem; font-weight: 700; color: var(--ink); }
+  input[type="range"] { width: 100%; accent-color: var(--navy); cursor: pointer; height: 1.5rem; margin: 0; }
+  output.readout-box, .readout-box { display: block; background: white; border: 1px solid #bfd4d2; border-radius: .55rem; padding: .65rem .8rem; margin-top: .6rem; min-height: 3.1em; font-size: .95rem; }
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: .5rem; margin-top: .65rem; }
+  .kpi { background: white; border: 1px solid var(--line); border-radius: .55rem; padding: .5rem .65rem; min-width: 0; }
+  .kpi-label { display: block; font-size: .78rem; font-weight: 700; color: var(--muted); letter-spacing: .01em; }
+  .kpi-val { display: block; font-size: 1.18rem; font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; margin-top: .1rem; }
+  .kpi-sub { display: block; font-size: .76rem; color: var(--muted); margin-top: .1rem; }
+  .viz-card { background: white; border: 1px solid var(--line); border-radius: .65rem; padding: .75rem; min-width: 0; }
+  figure { margin: 0; }
+  svg { display: block; width: 100%; max-width: 460px; margin-inline: auto; height: auto; overflow: visible; }
+  figcaption { text-align: center; margin-top: .35rem; }
+  /* Battery cohort animation */
+  .cohort-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .42rem; margin-top: .45rem; }
+  .bat { position: relative; height: 34px; border-radius: .38rem; border: 2px solid #006a70; background: #d6f3ee; color: #06464a; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 750; font-variant-numeric: tabular-nums; transition: background-color 280ms var(--ease), border-color 280ms var(--ease), color 280ms var(--ease), opacity 280ms var(--ease), transform 280ms var(--ease); }
+  .bat::after { content: ""; position: absolute; right: -5px; top: 9px; width: 3px; height: 12px; border-radius: 0 2px 2px 0; background: currentColor; opacity: .55; }
+  .bat.failed { background: #eef2f6; border-color: #b7c4d1; color: #697a89; opacity: .62; transform: scale(0.95); text-decoration: line-through; }
+  .bat.at-risk { box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.28); border-color: #007a77; }
+  /* Coin & indicator animation */
+  .toss-track { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: .35rem; margin-block: .65rem; }
+  .toss-col { display: flex; flex-direction: column; align-items: center; gap: .28rem; padding: .35rem .2rem; border-radius: .5rem; border: 1px solid transparent; background: rgba(255,255,255,0.65); transition: transform 220ms var(--ease), border-color 220ms var(--ease), background-color 220ms var(--ease); }
+  .toss-col.scanning { border-color: var(--navy); background: #fff; transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+  .ind-pill { font-size: .72rem; font-weight: 800; padding: .12rem .38rem; border-radius: 999px; background: #e6edf4; color: #546675; transition: background-color 220ms var(--ease), color 220ms var(--ease), transform 220ms var(--ease); }
+  .ind-pill.one { background: var(--amber-bg); color: var(--amber); border: 1px solid #e3b36b; transform: scale(1.06); }
+  .coin-btn { width: 100%; min-height: 38px; padding: .2rem; border-radius: .45rem; font-weight: 800; font-size: .92rem; }
+  .coin-btn.heads { background: var(--blue); color: var(--navy); border-color: #7ea3d4; }
+  .coin-btn.tails { background: #f4f1fb; color: #473380; border-color: #b5a7de; }
+  /* Bound comparison bars */
+  .bar-stack { display: flex; flex-direction: column; gap: .55rem; margin-top: .55rem; }
+  .bar-row { display: grid; grid-template-columns: 135px minmax(0, 1fr) 62px; align-items: center; gap: .55rem; font-size: .86rem; }
+  .bar-track { height: 18px; background: #e9eff5; border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+  .bar-fill { height: 100%; border-radius: 999px; transition: width 260ms var(--ease); }
+  .bar-fill.markov { background: #cf7a19; }
+  .bar-fill.cheb { background: var(--navy); }
+  .bar-fill.actual { background: var(--teal); }
+  /* Animated SVG transitions */
+  .svg-anim { transition: all 240ms var(--ease); }
+  /* Practice interactive quiz */
+  .quiz-progress { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .6rem; background: var(--blue); border: 1px solid #c6daf2; padding: .65rem .9rem; border-radius: .6rem; margin-bottom: .9rem; }
+  .progress-track { flex: 1 1 180px; height: 10px; background: white; border-radius: 999px; overflow: hidden; border: 1px solid #b5cce8; }
+  .progress-fill { height: 100%; width: 0%; background: var(--teal); transition: width 280ms var(--ease); }
+  .quiz-card { border: 1px solid var(--line); border-radius: .65rem; padding: .8rem .95rem; margin-top: .7rem; background: #fcfdff; transition: border-color 200ms var(--ease), background-color 200ms var(--ease); }
+  .quiz-card.solved { border-color: #7bc4a8; background: #f7fcfa; }
+  .quiz-q { font-weight: 700; color: var(--navy); margin: 0 0 .5rem; }
+  .choice-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .45rem; }
+  .choice-btn { font-size: .85rem; font-weight: 650; padding: .3rem .65rem; min-height: 38px; }
+  .choice-btn.correct { background: var(--green-bg); color: var(--green); border-color: #4aa881; }
+  .choice-btn.wrong { background: var(--red-bg); color: var(--red); border-color: #d97777; }
+  .quiz-feedback { font-size: .88rem; font-weight: 650; margin: .25rem 0 .35rem; min-height: 1.35em; }
+  .quiz-feedback.ok { color: var(--green); }
+  .quiz-feedback.retry { color: var(--amber); }
   details { margin-top: .65rem; border-top: 1px solid var(--line); padding-top: .6rem; }
+  .quiz-card details { margin-top: .35rem; padding-top: .45rem; }
   summary { cursor: pointer; font-weight: 700; color: var(--navy); }
+  details[open] > summary { margin-bottom: .35rem; }
   ol, ul { padding-left: 1.45rem; }
   li + li { margin-top: .24rem; }
-  figure { margin: 0; }
-  svg { display: block; width: min(100%, 340px); margin-inline: auto; height: auto; }
-  figcaption { text-align: center; }
   footer { border-top: 1px solid var(--line); padding-block: 1.2rem 2rem; }
+  .print-summary { display: none; font-size: .9rem; color: var(--ink-soft); margin-top: .5rem; }
   .enhanced #table-summary { display: none; }
-  @media (max-width: 650px) {
-    :root { --nav-height: 110px; }
-    .intro, .grid { grid-template-columns: minmax(0, 1fr); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+  @media (max-width: 680px) {
+    :root { --nav-height: 108px; }
+    .intro, .grid, .lab-split { grid-template-columns: minmax(0, 1fr); }
     .nav .wrap { gap: .12rem .2rem; }
-    .nav a { padding: .3rem .4rem; }
+    .nav a { padding: .3rem .42rem; font-size: .82rem; }
     th, td { padding: .34rem .42rem; }
+    .toss-track { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .bar-row { grid-template-columns: 105px minmax(0, 1fr) 54px; font-size: .8rem; }
   }
   @media print {
-    body, section, header { background: white; color: black; }
-    header { padding: 0; border-top: 0; }
-    header .eyebrow, header .lead { color: black; }
-    h1 { font-size: 28pt; max-width: none; }
+    body, section, header, .lab, .viz-card, .quiz-card { background: white !important; color: black !important; box-shadow: none !important; }
+    header { padding: 0 0 .6rem; border-top: 0; border-bottom: 2px solid black; }
+    header .eyebrow, header .lead, header .pill { color: black; border-color: #666; }
+    h1 { font-size: 26pt; max-width: none; color: black; }
     .wrap { width: 100%; }
-    .nav, .skip, .lab fieldset, .lab output { display: none; }
-    .enhanced #table-summary { display: block; }
-    section { padding: .75rem; }
-    .tile, .example, figure, table { break-inside: avoid; }
+    .nav, .skip, .lab fieldset, .lab .control-row, .lab output, .choice-row, .quiz-feedback, .quiz-progress { display: none !important; }
+    .enhanced #table-summary, .print-summary { display: block !important; }
+    section { padding: .75rem; break-inside: auto; }
+    .tile, .example, figure, table, .quiz-card { break-inside: avoid; }
     h2, h3, summary { break-after: avoid; }
     .prob .lit { box-shadow: none; font-weight: inherit; color: inherit; }
   }
@@ -99,7 +186,13 @@
     <p class="eyebrow">SDST2601A / STAT2601A · Chapters 6–7</p>
     <h1>Probability, one variable at a time</h1>
     <p class="lead">Start with the question the problem is asking. Are you reading one distribution, changing what gets measured, or figuring out how two variables behave together?</p>
-    <p>Read the main explanations first. Open the worked examples and derivations when you want to follow the lecture material in more depth.</p>
+    <p>Experiment with the interactive labs in each section to build visual intuition first, then open the worked examples and derivations to master the exam-level math.</p>
+    <div class="hero-badges" aria-label="Guide features">
+      <span class="pill">7 Interactive Visual Labs</span>
+      <span class="pill">19 Lecture Deep Dives</span>
+      <span class="pill">8 Self-Check Quiz Problems</span>
+      <span class="pill">100% Offline &amp; Print-Ready</span>
+    </div>
   </div>
 </header>
 <nav class="nav" aria-label="Study guide sections">
@@ -130,6 +223,70 @@
       </table>
     </div>
     <div class="example"><strong>Worked example · Illustrative</strong><p>If X is exponential with rate 0.2 per hour, then <span class="formula">S(t) = e<sup>−0.2t</sup></span> and <span class="formula">f(t) = 0.2e<sup>−0.2t</sup></span>. The exponentials cancel in <span class="formula">f/S</span>: the hazard is always 0.2 per hour, even as the surviving fraction shrinks. For a surviving battery the chance of failing in the next 0.1 hour is about 0.02, not 0.2.</p></div>
+
+    <div class="lab" aria-labelledby="surv-lab-title">
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 01 · Illustrative Cohort</p>
+          <h3 id="surv-lab-title">Watch the survivor pool shrink while hazard tracks who is left</h3>
+        </div>
+        <span class="pill teal">20-battery cohort + live curves</span>
+      </div>
+      <fieldset>
+        <legend>1. Choose a failure-rate regime</legend>
+        <div class="btn-group" id="surv-modes">
+          <button type="button" aria-pressed="true" data-surv="exp">Constant hazard (Exp, β = 1)</button>
+          <button type="button" aria-pressed="false" data-surv="wearout">Aging wear-out (Weibull, β = 2)</button>
+          <button type="button" aria-pressed="false" data-surv="burnin">Early defects (Weibull, β = 0.6)</button>
+        </div>
+      </fieldset>
+      <div class="control-row">
+        <div class="slider-group">
+          <label class="slider-label" for="surv-time"><span>2. Scrub time <span class="formula">t</span> (hours)</span><span class="num" id="surv-t-label">1.40 h</span></label>
+          <input type="range" id="surv-time" min="0" max="4" step="0.01" value="1.40">
+        </div>
+        <button type="button" class="play-btn" id="surv-play" aria-pressed="false">▶ Play timeline</button>
+      </div>
+      <div class="lab-split">
+        <div class="viz-card">
+          <h4>Original batch of 20 batteries</h4>
+          <p class="small">Teal batteries are <strong>still running</strong> (<span class="formula">S(t)</span>)—the denominator of hazard <span class="formula">λ(t) = f(t)/S(t)</span>.</p>
+          <div class="cohort-grid" id="surv-cohort" aria-label="20 battery survival status grid"></div>
+          <div class="kpi-strip">
+            <div class="kpi"><span class="kpi-label">Survived S(t)</span><span class="kpi-val" id="kpi-s">53.3%</span><span class="kpi-sub">Still running</span></div>
+            <div class="kpi"><span class="kpi-label">Failed F(t)</span><span class="kpi-val" id="kpi-f">46.7%</span><span class="kpi-sub">Cumulative</span></div>
+            <div class="kpi"><span class="kpi-label">Density f(t)</span><span class="kpi-val" id="kpi-pdf">0.240</span><span class="kpi-sub">Of original batch/h</span></div>
+            <div class="kpi"><span class="kpi-label">Hazard λ(t)</span><span class="kpi-val" id="kpi-haz">0.450</span><span class="kpi-sub">Among survivors/h</span></div>
+          </div>
+        </div>
+        <figure class="viz-card">
+          <svg viewBox="0 0 360 225" role="img" aria-labelledby="surv-svg-title surv-svg-desc">
+            <title id="surv-svg-title">Survival, density, and hazard curves over time</title>
+            <desc id="surv-svg-desc">Plots S(t) in teal, f(t) in navy, and hazard lambda(t) in dashed amber from t equals 0 to 4 hours with a movable vertical time marker.</desc>
+            <line x1="42" y1="185" x2="342" y2="185" stroke="#8da6b6" stroke-width="1.5"/>
+            <line x1="42" y1="22" x2="42" y2="185" stroke="#8da6b6" stroke-width="1.5"/>
+            <line x1="42" y1="76.3" x2="342" y2="76.3" stroke="#e2ebf3" stroke-dasharray="4 4"/>
+            <path id="surv-path-s" fill="none" stroke="#006a70" stroke-width="2.8"/>
+            <path id="surv-path-f" fill="none" stroke="#143a73" stroke-width="2.4"/>
+            <path id="surv-path-h" fill="none" stroke="#b55b00" stroke-width="2.5" stroke-dasharray="6 4"/>
+            <line id="surv-cursor" x1="147" y1="22" x2="147" y2="185" stroke="#17262f" stroke-width="1.6" stroke-dasharray="3 3"/>
+            <circle id="surv-dot-s" cx="147" cy="127" r="4.5" fill="#006a70"/>
+            <circle id="surv-dot-f" cx="147" cy="159" r="4.5" fill="#143a73"/>
+            <circle id="surv-dot-h" cx="147" cy="136" r="4.5" fill="#b55b00"/>
+            <g font-size="11.5" fill="#2c3e4c" font-family="system-ui, sans-serif">
+              <text x="14" y="80">1.0</text><text x="14" y="135">0.5</text><text x="22" y="189">0</text>
+              <text x="39" y="202">0</text><text x="114" y="202">1</text><text x="189" y="202">2</text><text x="264" y="202">3</text><text x="336" y="202">4h</text>
+              <text x="52" y="16" fill="#006a70" font-weight="700">— S(t)</text>
+              <text x="115" y="16" fill="#143a73" font-weight="700">— f(t)</text>
+              <text x="178" y="16" fill="#b55b00" font-weight="700">- - λ(t) hazard</text>
+            </g>
+          </svg>
+          <figcaption class="small">Notice how <span class="formula">f(t)</span> can fall while <span class="formula">λ(t)</span> stays flat or rises—fewer items remain to fail.</figcaption>
+        </figure>
+      </div>
+      <output class="readout-box" id="surv-readout" aria-live="polite"></output>
+      <p class="print-summary"><strong>Cohort summary:</strong> Under Exp(0.45), S(t) and f(t) decay exponentially while hazard λ(t) = f(t)/S(t) stays constant at 0.45/h. Under Weibull(β = 2), hazard rises linearly with age; under Weibull(β = 0.6), hazard falls as early defects are weeded out.</p>
+    </div>
     <details>
       <summary>Why divide by S(t)? And can we go backwards?</summary>
       <p>Condition on <span class="formula">X &gt; t</span>. The exact next-interval probability is <span class="formula">[F(t + Δt) − F(t)]/S(t)</span>, which is approximately <span class="formula">λ(t)Δt</span> for a short interval. Hazard is a rate, not a probability. Since <span class="formula">f = −S′</span>, we have <span class="formula">λ = −(log S)′</span>; for a positive lifetime starting with <span class="formula">S(0)=1</span>, <span class="formula">S(t) = exp(−∫<sub>0</sub><sup>t</sup> λ(u) du)</span>.</p>
@@ -158,6 +315,61 @@
       </div>
     </div>
     <div class="example"><strong>Worked example · Illustrative</strong><p>A nonnegative waiting time has mean 10 minutes and SD 2 minutes. Markov gives <span class="formula">P(X ≥ 15) ≤ 10/15</span>. Chebyshev gives <span class="formula">P(X ≥ 15) ≤ P(|X − 10| ≥ 5) ≤ 4/25</span>. Neither bound tells you the exact probability.</p></div>
+
+    <div class="lab" aria-labelledby="bounds-lab-title">
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 02 · Indicators &amp; Tail Ceilings</p>
+          <h3 id="bounds-lab-title">Scan coin-flip runs with 0/1 switches &amp; tighten tail bounds</h3>
+        </div>
+        <span class="pill navy">Click coins + drag cutoff</span>
+      </div>
+      <div class="lab-split">
+        <div class="viz-card">
+          <h4>A. Run-start indicator scanner (Ex. 6.5)</h4>
+          <p class="small">Click any coin to flip it, or scan step-by-step. <span class="formula">I<sub>i</sub> = 1</span> whenever toss <span class="formula">i</span> starts a new maximal block.</p>
+          <div class="btn-group">
+            <button type="button" id="run-preset">Ex. 6.5 (HTHHHTTH)</button>
+            <button type="button" id="run-random">Random 8 flips</button>
+            <button type="button" class="play-btn" id="run-scan" aria-pressed="false">▶ Scan I₁…I₈</button>
+          </div>
+          <div class="toss-track" id="toss-track" role="group" aria-label="Eight coin tosses and their run-start indicators"></div>
+          <div class="slider-group">
+            <label class="slider-label" for="run-p"><span>Assumed head prob <span class="formula">p</span> for <span class="formula">E[X]</span></span><span class="num" id="run-p-val">0.50</span></label>
+            <input type="range" id="run-p" min="0.10" max="0.90" step="0.05" value="0.50">
+          </div>
+          <output class="readout-box" id="run-readout" aria-live="polite"></output>
+        </div>
+        <div class="viz-card">
+          <h4>B. Markov vs. Chebyshev ceiling (μ = 10, σ = 2)</h4>
+          <p class="small">Compare upper bounds on <span class="formula">P(X ≥ a)</span> as you move cutoff <span class="formula">a</span> further above the mean.</p>
+          <div class="slider-group">
+            <label class="slider-label" for="bound-a"><span>Cutoff <span class="formula">a</span> (minutes)</span><span class="num" id="bound-a-val">15.0 min (2.5σ)</span></label>
+            <input type="range" id="bound-a" min="11" max="20" step="0.5" value="15">
+          </div>
+          <div class="bar-stack" aria-label="Probability upper bound comparison bars">
+            <div class="bar-row">
+              <span><strong>Markov</strong> <span class="small">μ/a</span></span>
+              <div class="bar-track"><div class="bar-fill markov" id="bar-markov" style="width:66.7%"></div></div>
+              <strong class="num" id="val-markov">66.7%</strong>
+            </div>
+            <div class="bar-row">
+              <span><strong>Chebyshev</strong> <span class="small">σ²/d²</span></span>
+              <div class="bar-track"><div class="bar-fill cheb" id="bar-cheb" style="width:16.0%"></div></div>
+              <strong class="num" id="val-cheb">16.0%</strong>
+            </div>
+            <div class="bar-row">
+              <span><strong>Sample Gamma*</strong></span>
+              <div class="bar-track"><div class="bar-fill actual" id="bar-actual" style="width:1.2%"></div></div>
+              <strong class="num" id="val-actual">1.2%</strong>
+            </div>
+          </div>
+          <output class="readout-box" id="bound-readout" aria-live="polite"></output>
+          <p class="small">*Illustrative Gamma(25, 2.5) having the exact same μ = 10 and σ = 2.</p>
+        </div>
+      </div>
+      <p class="print-summary"><strong>Indicator &amp; Bound summary:</strong> For HTHHHTTH (n = 8), indicators I₁…I₈ equal (1,1,1,0,0,1,0,1), summing to 5 runs; for fair coins E[X] = 1 + 2(7)(0.25) = 4.5. At a = 15 with μ = 10, σ = 2, Markov caps P(X ≥ 15) at 66.7% while Chebyshev tightens the cap to 16.0%.</p>
+    </div>
     <details>
       <summary>Indicator shortcuts for AND, OR, and NOT</summary>
       <p class="formula">I<sub>A∩B</sub> = I<sub>A</sub>I<sub>B</sub>; &nbsp; I<sub>A∪B</sub> = I<sub>A</sub> + I<sub>B</sub> − I<sub>A</sub>I<sub>B</sub>; &nbsp; I<sub>Aᶜ</sub> = 1 − I<sub>A</sub>.</p>
@@ -188,6 +400,68 @@
       <div class="tile"><h3>Mixed: a smooth stretch and a jump</h3><p>Adapted from Example 6.7: a test records <span class="formula">X = min(T, 2)</span>, where T is exponential with rate 1 (in the chosen time units). Early failures have density <span class="formula">e<sup>−x</sup></span> on <span class="formula">0 &lt; x &lt; 2</span>; every device that makes it to 2 is recorded as exactly 2. Thus <span class="formula">P(X=2)=e<sup>−2</sup>≈0.135</span>.</p></div>
     </div>
     <p class="tip"><strong>Try the cutoff rule:</strong> Just before 2 the mixed CDF approaches 0.865, then jumps to 1 at 2. The 90th percentile is 2 even though the CDF never equals 0.90. To find the mean of this mixed variable, add both contributions: <span class="formula">∫<sub>0</sub><sup>2</sup> xe<sup>−x</sup> dx + 2e<sup>−2</sup> = 1 − e<sup>−2</sup></span>.</p>
+
+    <div class="lab" aria-labelledby="quant-lab-title">
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 03 · Inverse CDF Laser</p>
+          <h3 id="quant-lab-title">Shoot a horizontal ray at height p and drop to the first x</h3>
+        </div>
+        <span class="pill amber">Smooth, stepped &amp; mixed CDFs</span>
+      </div>
+      <fieldset>
+        <legend>1. Pick a lecture distribution</legend>
+        <div class="btn-group" id="quant-modes">
+          <button type="button" aria-pressed="false" data-quant="cont">Continuous: Exp(1) (§6.5.1)</button>
+          <button type="button" aria-pressed="false" data-quant="disc">Discrete: Bin(5, 0.3) (Ex. 6.11)</button>
+          <button type="button" aria-pressed="true" data-quant="mixed">Mixed: min(T, 2) (Ex. 6.7)</button>
+        </div>
+      </fieldset>
+      <div class="control-row">
+        <div class="slider-group">
+          <label class="slider-label" for="quant-p"><span>2. Target probability <span class="formula">p</span></span><span class="num" id="quant-p-val">p = 0.90 (90th percentile)</span></label>
+          <input type="range" id="quant-p" min="0.05" max="0.98" step="0.01" value="0.90">
+        </div>
+        <div class="btn-group" aria-label="Quick percentile presets">
+          <button type="button" data-qpreset="0.50">p = 0.50</button>
+          <button type="button" data-qpreset="0.75">p = 0.75</button>
+          <button type="button" data-qpreset="0.90">p = 0.90</button>
+        </div>
+      </div>
+      <div class="lab-split">
+        <figure class="viz-card">
+          <svg viewBox="0 0 380 225" role="img" aria-labelledby="quant-svg-title quant-svg-desc">
+            <title id="quant-svg-title">Reading a quantile from a cumulative distribution function</title>
+            <desc id="quant-svg-desc">Shows F(x) from x equals 0 to 5, a horizontal ray at level p hitting the first x where F(x) is at least p, and a vertical drop to the quantile q_p.</desc>
+            <line x1="46" y1="185" x2="356" y2="185" stroke="#8da6b6" stroke-width="1.5"/>
+            <line x1="46" y1="20" x2="46" y2="185" stroke="#8da6b6" stroke-width="1.5"/>
+            <line x1="46" y1="25" x2="356" y2="25" stroke="#e2ebf3" stroke-dasharray="4 4"/>
+            <line x1="46" y1="105" x2="356" y2="105" stroke="#e2ebf3" stroke-dasharray="4 4"/>
+            <g id="quant-cdf-layer"></g>
+            <line id="quant-ray-h" class="svg-anim" x1="46" y1="41" x2="170" y2="41" stroke="#b55b00" stroke-width="2.4" stroke-dasharray="5 3"/>
+            <line id="quant-ray-v" class="svg-anim" x1="170" y1="41" x2="170" y2="185" stroke="#b55b00" stroke-width="2.4" stroke-dasharray="5 3"/>
+            <circle id="quant-hit" class="svg-anim" cx="170" cy="41" r="5" fill="#b55b00"/>
+            <circle id="quant-foot" class="svg-anim" cx="170" cy="185" r="5" fill="#143a73"/>
+            <g font-size="11.5" fill="#2c3e4c" font-family="system-ui, sans-serif">
+              <text x="18" y="29">1.0</text><text x="18" y="109">0.5</text><text x="26" y="189">0</text>
+              <text x="43" y="202">0</text><text x="105" y="202">1</text><text x="167" y="202">2</text><text x="229" y="202">3</text><text x="291" y="202">4</text><text x="350" y="202">5</text>
+              <text x="54" y="15" fill="#143a73" font-weight="700">— CDF F(x)</text>
+              <text x="165" y="15" fill="#b55b00" font-weight="700">- - p → qₚ laser</text>
+            </g>
+          </svg>
+        </figure>
+        <div class="viz-card">
+          <h4>How the rule <span class="formula">q<sub>p</sub> = min{x : F(x) ≥ p}</span> decides</h4>
+          <div class="kpi-strip">
+            <div class="kpi"><span class="kpi-label">Target level p</span><span class="kpi-val" id="quant-kpi-p">0.90</span><span class="kpi-sub">Left-tail goal</span></div>
+            <div class="kpi"><span class="kpi-label">Quantile qₚ</span><span class="kpi-val" id="quant-kpi-q">2.000</span><span class="kpi-sub">First x with F(x) ≥ p</span></div>
+            <div class="kpi"><span class="kpi-label">Actual F(qₚ)</span><span class="kpi-val" id="quant-kpi-fq">1.000</span><span class="kpi-sub">At the landing point</span></div>
+          </div>
+          <output class="readout-box" id="quant-readout" aria-live="polite"></output>
+        </div>
+      </div>
+      <p class="print-summary"><strong>Quantile lab summary:</strong> On smooth regions solve F(x) = p; on discrete steps (Bin(5, 0.3)) or mixed jumps (min(T, 2) jumping from 0.8647 to 1 at x = 2), the horizontal ray hits a vertical riser, returning the exact jump location (e.g. q₀.₅ = 1 and q₀.₇₅ = 2 for Bin(5, 0.3); q₀.₉₀ = 2 for min(T, 2)).</p>
+    </div>
     <details>
       <summary>Calculate normal, exponential, and binomial quantiles (§6.5)</summary>
       <ul>
@@ -209,6 +483,70 @@
       <li><strong>Read off what you need.</strong> Differentiate the resulting CDF for a density when Y is absolutely continuous. For discrete Y, add the masses of all X values mapping to each y.</li>
     </ol>
     <div class="example"><strong>Worked example · Squaring a standard normal (Example 6.16)</strong><p>For <span class="formula">y ≥ 0</span>, <span class="formula">P(X² ≤ y) = P(−√y ≤ X ≤ √y) = 2Φ(√y) − 1</span> by symmetry. For <span class="formula">y &lt; 0</span>, it is 0. The density for <span class="formula">y &gt; 0</span> is <span class="formula">φ(√y)/√y</span>, where Φ and φ are the standard normal CDF and density. Using only the positive root misses half the probability.</p></div>
+
+    <div class="lab" aria-labelledby="trans-lab-title">
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 04 · Pre-Image &amp; Jacobian Explorer</p>
+          <h3 id="trans-lab-title">See which X values feed the event {Y ≤ y}</h3>
+        </div>
+        <span class="pill purple">2-to-1 folding vs. 1-to-1 stretching</span>
+      </div>
+      <fieldset>
+        <legend>1. Choose transformation of <span class="formula">X ∼ N(0, 1)</span></legend>
+        <div class="btn-group" id="trans-modes">
+          <button type="button" aria-pressed="true" data-trans="square">2-to-1 Folding: Y = X² ∼ χ²(1) (Ex. 6.16)</button>
+          <button type="button" aria-pressed="false" data-trans="exp">1-to-1 Stretch: Y = eˣ Log-normal (Ex. 6.15)</button>
+        </div>
+      </fieldset>
+      <div class="control-row">
+        <div class="slider-group">
+          <label class="slider-label" for="trans-y"><span>2. Output cutoff <span class="formula">y</span></span><span class="num" id="trans-y-val">y = 1.44</span></label>
+          <input type="range" id="trans-y" min="0.20" max="3.60" step="0.05" value="1.44">
+        </div>
+      </div>
+      <div class="lab-split">
+        <figure class="viz-card">
+          <svg viewBox="0 0 380 258" role="img" aria-labelledby="trans-svg-title trans-svg-desc">
+            <title id="trans-svg-title">Mapping probability from X space to transformed Y space</title>
+            <desc id="trans-svg-desc">Top plot shows standard normal density f_X(x) with shaded pre-image matching g(X) at most y; arrows connect to bottom plot showing transformed density f_Y(y) shaded from 0 to y.</desc>
+            <!-- Top axis: X ~ N(0,1) on [-3, 3] -->
+            <text x="12" y="18" font-size="11.5" font-weight="700" fill="#143a73" font-family="system-ui, sans-serif">Original X ∼ N(0,1)</text>
+            <path id="trans-x-shade-neg" fill="#ffd89b" opacity="0.85"/>
+            <path id="trans-x-shade-pos" fill="#bce6df" opacity="0.9"/>
+            <path id="trans-x-curve" fill="none" stroke="#143a73" stroke-width="2.2"/>
+            <line x1="36" y1="95" x2="356" y2="95" stroke="#8da6b6" stroke-width="1.4"/>
+            <text x="34" y="108" font-size="10.5" fill="#4c6272">−3</text>
+            <text x="193" y="108" font-size="10.5" fill="#4c6272">0</text>
+            <text x="348" y="108" font-size="10.5" fill="#4c6272">+3</text>
+            <!-- Mapping arrows -->
+            <path id="trans-arrow-1" fill="none" stroke="#006a70" stroke-width="1.8" stroke-dasharray="4 3"/>
+            <path id="trans-arrow-2" fill="none" stroke="#b55b00" stroke-width="1.8" stroke-dasharray="4 3"/>
+            <!-- Bottom axis: Y on [0, 4] -->
+            <text x="12" y="148" font-size="11.5" font-weight="700" fill="#006a70" font-family="system-ui, sans-serif" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round" id="trans-y-title">Transformed Y = X² on (0, ∞)</text>
+            <path id="trans-y-shade" fill="#bce6df" opacity="0.9"/>
+            <path id="trans-y-curve" fill="none" stroke="#006a70" stroke-width="2.2"/>
+            <line x1="36" y1="230" x2="356" y2="230" stroke="#8da6b6" stroke-width="1.4"/>
+            <line id="trans-y-marker" x1="151" y1="160" x2="151" y2="230" stroke="#17262f" stroke-width="1.8"/>
+            <text x="34" y="245" font-size="10.5" fill="#4c6272">0</text>
+            <text x="114" y="245" font-size="10.5" fill="#4c6272">1</text>
+            <text x="194" y="245" font-size="10.5" fill="#4c6272">2</text>
+            <text x="274" y="245" font-size="10.5" fill="#4c6272">3</text>
+            <text x="349" y="245" font-size="10.5" fill="#4c6272">4</text>
+          </svg>
+        </figure>
+        <div class="viz-card">
+          <h4>Event translation &amp; density check</h4>
+          <div class="kpi-strip">
+            <div class="kpi"><span class="kpi-label">X Pre-image</span><span class="kpi-val" id="trans-kpi-pre">[−1.20, 1.20]</span><span class="kpi-sub">Feeds {Y ≤ y}</span></div>
+            <div class="kpi"><span class="kpi-label">Exact F_Y(y)</span><span class="kpi-val" id="trans-kpi-fy">76.99%</span><span class="kpi-sub">Shaded area</span></div>
+            <div class="kpi"><span class="kpi-label">Density f_Y(y)</span><span class="kpi-val" id="trans-kpi-pdf">0.162</span><span class="kpi-sub">Height at y</span></div>
+          </div>
+          <output class="readout-box" id="trans-readout" aria-live="polite"></output>
+        </div>
+      </div>
+      <p class="print-summary"><strong>Transformation lab summary:</strong> For Y = X² with y = 1.44, both [−1.2, 0] (amber) and [0, 1.2] (teal) fold onto [0, 1.44], giving F_Y(1.44) = 2Φ(1.2) − 1 ≈ 77.0%. Using only X ≤ √y or 0 ≤ X ≤ √y loses the negative branch. For Y = eˣ, g is strictly increasing and |dx/dy| = 1/y stretches/compresses density.</p>
+    </div>
     <details>
       <summary>Shortcut for a smooth one-to-one transformation</summary>
       <p>On the transformed support, with differentiable inverse, <span class="formula">f<sub>Y</sub>(y) = f<sub>X</sub>(g<sup>−1</sup>(y)) |(g<sup>−1</sup>)′(y)|</span>, and the density is zero outside. The inverse locates the original value; the absolute derivative adjusts for how much X-width fits inside a small Y interval.</p>
@@ -232,8 +570,13 @@
     <h2>Joint, marginal, independent: three different questions</h2>
     <p class="lead">Say X and Y record whether a student attended two different review sessions (1 = yes, 0 = no). “Attended both” needs the pair; “attended the first, regardless of the second” needs a marginal.</p>
     <div class="lab" aria-labelledby="table-lab">
-      <p class="eyebrow">Table lab · Illustrative probabilities</p>
-      <h3 id="table-lab">Read the same table three ways</h3>
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 05A · Discrete Joint Table</p>
+          <h3 id="table-lab">Read the same table three ways</h3>
+        </div>
+        <span class="pill teal">Joint vs. Marginal vs. Independence</span>
+      </div>
       <fieldset id="table-controls" hidden>
         <legend>Choose a question</legend>
         <div class="btn-group">
@@ -253,7 +596,7 @@
           <tfoot><tr><th scope="row">Column total</th><td>0.60</td><td data-modes="independent">0.40</td><td>1.00</td></tr></tfoot>
         </table>
       </div>
-      <output id="table-answer" aria-live="polite" hidden></output>
+      <output class="readout-box" id="table-answer" aria-live="polite" hidden></output>
       <noscript><p>Interactive highlights require JavaScript. All three readings are below.</p></noscript>
       <ol id="table-summary">
         <li data-answer="joint"><strong>Joint:</strong> P(X = 1, Y = 1) = 0.30. Read the cell where both coordinates are 1.</li>
@@ -261,28 +604,61 @@
         <li data-answer="independent"><strong>Independence:</strong> 0.30 ≠ 0.50 × 0.40 = 0.20. The actual joint cell differs from the product of its margins, so X and Y are dependent.</li>
       </ol>
     </div>
-    <div class="grid">
-      <div>
-        <h3>Continuous case: replace sums with integrals</h3>
-        <p>The <strong>support</strong> is the region where the model has density. A joint density is nonnegative and integrates to 1 over the plane. To get a probability, integrate over the region of interest. For the joint CDF <span class="formula">F(x,y)=P(X ≤ x, Y ≤ y)</span>, use the part of the support below and to the left of (x,y). In the discrete case, sum the cells in that region instead.</p>
-        <p>To get the marginal for X, hold x fixed and integrate out y. On the pictured triangle, the y bounds are 0 to x, so <span class="formula">f<sub>X</sub>(x)=∫<sub>0</sub><sup>x</sup> 2 dy=2x</span> for <span class="formula">0 &lt; x &lt; 1</span>, and zero elsewhere.</p>
+    <div>
+      <h3>Continuous case: replace sums with integrals</h3>
+      <p>The <strong>support</strong> is the region where the model has density. A joint density is nonnegative and integrates to 1 over the plane. To get a probability, integrate over the region of interest. For the joint CDF <span class="formula">F(x,y)=P(X ≤ x, Y ≤ y)</span>, use the part of the support below and to the left of (x,y). In the discrete case, sum the cells in that region instead.</p>
+      <p>To get the marginal for X, hold x fixed and integrate out y. On a triangular support <span class="formula">0 &lt; y &lt; x &lt; 1</span>, the y bounds depend on x (<span class="formula">0</span> to <span class="formula">x</span>), so <span class="formula">f<sub>X</sub>(x)=∫<sub>0</sub><sup>x</sup> 2 dy=2x</span>. Try slicing all three lecture supports below to see why curved or slanted boundaries force dependence.</p>
+    </div>
+
+    <div class="lab" aria-labelledby="slice-lab-title">
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 05B · Continuous Support Slicer</p>
+          <h3 id="slice-lab-title">Slice a 2D support to build marginals &amp; test independence</h3>
+        </div>
+        <span class="pill navy">Moving integration limits</span>
       </div>
-      <figure>
-        <svg viewBox="0 0 320 210" role="img" aria-labelledby="triangle-title triangle-desc">
-          <title id="triangle-title">Vertical slice through a triangular support</title>
-          <desc id="triangle-desc">The support lies above y equals zero, below y equals x, and to the left of x equals one. At any fixed x inside the triangle, y runs from zero to x.</desc>
-          <path d="M47 162 H237 V22 Z" fill="#d2ece8" stroke="#006a70" stroke-width="2"/>
-          <path d="M47 15 V162 H273" fill="none" stroke="#143a73" stroke-width="2"/>
-          <path d="M159 162 V79.47" stroke="#143a73" stroke-width="3" stroke-dasharray="6 4"/>
-          <circle cx="159" cy="79.47" r="4" fill="#143a73"/>
-          <g fill="#17262f" font-size="15" font-family="system-ui, sans-serif">
-            <text x="29" y="26">y</text><text x="279" y="166">x</text>
-            <text x="35" y="183">0</text><text x="233" y="183">1</text>
-            <text x="87" y="84">y = x</text><text x="136" y="183">fixed x</text>
-          </g>
-        </svg>
-        <figcaption class="small">Illustrative density: f(x,y) = 2 inside 0 &lt; y &lt; x &lt; 1 and zero outside.</figcaption>
-      </figure>
+      <fieldset>
+        <legend>1. Choose a lecture 2D support &amp; density</legend>
+        <div class="btn-group" id="slice-models">
+          <button type="button" aria-pressed="true" data-smodel="triangle">Triangle: f = 2 on 0 &lt; y &lt; x &lt; 1</button>
+          <button type="button" aria-pressed="false" data-smodel="square">Square: f = 4x(1−y) (Ex. 7.7)</button>
+          <button type="button" aria-pressed="false" data-smodel="disk">Unit Disk: f = 1/π (Ex. 7.13)</button>
+        </div>
+      </fieldset>
+      <div class="control-row">
+        <fieldset style="margin:0">
+          <legend>2. Operation</legend>
+          <div class="btn-group" id="slice-ops">
+            <button type="button" aria-pressed="true" data-sop="vx">Vertical slice → f_X(x)</button>
+            <button type="button" aria-pressed="false" data-sop="hy">Horizontal slice → f_Y(y)</button>
+            <button type="button" aria-pressed="false" data-sop="cdf">CDF corner F(c, c)</button>
+          </div>
+        </fieldset>
+        <div class="slider-group">
+          <label class="slider-label" for="slice-pos"><span id="slice-slider-name">3. Slice position x</span><span class="num" id="slice-pos-val">0.60</span></label>
+          <input type="range" id="slice-pos" min="0.08" max="0.92" step="0.02" value="0.60">
+        </div>
+      </div>
+      <div class="lab-split">
+        <figure class="viz-card">
+          <svg viewBox="0 0 320 225" role="img" aria-labelledby="triangle-title triangle-desc">
+            <title id="triangle-title">2D joint support and active integration slice</title>
+            <desc id="triangle-desc">Displays the 2D support region in teal and highlights the active vertical slice, horizontal slice, or lower-left joint CDF region.</desc>
+            <g id="slice-2d-layer"></g>
+          </svg>
+          <figcaption class="small" id="slice-2d-cap">Support: 0 &lt; y &lt; x &lt; 1 (non-rectangular → dependent).</figcaption>
+        </figure>
+        <div class="viz-card">
+          <svg viewBox="0 0 320 155" role="img" aria-labelledby="marg-svg-title marg-svg-desc">
+            <title id="marg-svg-title">Resulting marginal or cumulative curve</title>
+            <desc id="marg-svg-desc">Plots the 1D marginal density or diagonal CDF curve with a marker synchronized to the 2D slice position.</desc>
+            <g id="slice-1d-layer"></g>
+          </svg>
+          <output class="readout-box" id="slice-readout" aria-live="polite"></output>
+        </div>
+      </div>
+      <p class="print-summary"><strong>2D Slicer summary:</strong> On the triangle 0 &lt; y &lt; x &lt; 1 (f = 2), vertical slices run from 0 to x giving f_X(x) = 2x, while horizontal slices run from y to 1 giving f_Y(y) = 2(1−y) (dependent). On the unit square f(x,y) = 4x(1−y), slice limits stay [0,1] and f(x,y) = f_X(x)f_Y(y) (independent). On the unit disk f = 1/π, vertical chord length is 2√(1−x²), giving f_X(x) = (2/π)√(1−x²) (dependent).</p>
     </div>
     <p class="tip"><strong>Check the whole model for independence.</strong> In a table, check <span class="formula">p(x,y)=p<sub>X</sub>(x)p<sub>Y</sub>(y)</span> for every pair. A single mismatch proves dependence; a single match proves nothing. For densities, check <span class="formula">f(x,y)=f<sub>X</sub>(x)f<sub>Y</sub>(y)</span> almost everywhere, including zero-density regions. Even though the triangle’s density is constant inside it, the variables are dependent: both marginals are positive on (0,1), but pairs with y &gt; x are impossible.</p>
     <details>
@@ -332,6 +708,80 @@
     <p class="formula mathline">Var(aX + bY) = a²Var(X) + b²Var(Y) + 2ab Cov(X,Y)</p>
     <p>Neither identity requires independence (assuming the needed moments exist). The variance cross-term is what you pick up when you square the centered sum. For more variables, add one such cross-term per unordered pair.</p>
     <p class="tip"><strong>Independence implies zero covariance, not the reverse.</strong> Let X be equally likely to be −1, 0, or 1, and let Y = X². Knowing X tells you Y exactly. Yet <span class="formula">E[X]=0</span> and <span class="formula">E[XY]=E[X³]=0</span> by symmetry, so ρ = 0. Correlation measures linear association, not all kinds of dependence or causation.</p>
+
+    <div class="lab" aria-labelledby="cov-lab-title">
+      <div class="lab-head">
+        <div>
+          <p class="eyebrow">Interactive Lab 06 · Correlation Traps &amp; Markowitz Frontier</p>
+          <h3 id="cov-lab-title">Glide from linear ρ to zero-correlation traps &amp; diversify risk</h3>
+        </div>
+        <span class="pill green">Ex. 7.19 Portfolio + Ex. 7.22 Circle</span>
+      </div>
+      <fieldset>
+        <legend>1. Choose dependence pattern</legend>
+        <div class="btn-group" id="cov-patterns">
+          <button type="button" aria-pressed="true" data-cpat="linear">Linear correlation (use ρ slider)</button>
+          <button type="button" aria-pressed="false" data-cpat="circle">Trap: Unit Circle (ρ = 0, Ex. 7.22)</button>
+          <button type="button" aria-pressed="false" data-cpat="parabola">Trap: Parabola Y = X² (ρ = 0)</button>
+        </div>
+      </fieldset>
+      <div class="control-row">
+        <div class="slider-group">
+          <label class="slider-label" for="cov-rho"><span>2. Linear correlation <span class="formula">ρ</span></span><span class="num" id="cov-rho-val">−0.30</span></label>
+          <input type="range" id="cov-rho" min="-0.95" max="0.95" step="0.05" value="-0.30">
+        </div>
+        <div class="slider-group">
+          <label class="slider-label" for="cov-w"><span>3. Asset 1 weight <span class="formula">w</span> (σ₁=10%, σ₂=20%)</span><span class="num" id="cov-w-val">w = 0.74</span></label>
+          <input type="range" id="cov-w" min="0" max="1" step="0.02" value="0.74">
+        </div>
+        <button type="button" id="cov-minvar">Snap to min-risk w*</button>
+      </div>
+      <div class="lab-split">
+        <figure class="viz-card">
+          <h4>Centered co-movement cloud</h4>
+          <svg viewBox="0 0 280 220" role="img" aria-labelledby="cloud-title cloud-desc">
+            <title id="cloud-title">Standardized scatter plot with signed quadrants</title>
+            <desc id="cloud-desc">Shows 36 standardized points across quadrants where top-right and bottom-left contribute positively to covariance and top-left and bottom-right contribute negatively.</desc>
+            <rect x="35" y="15" width="105" height="90" fill="#fdecec" opacity="0.55"/>
+            <rect x="140" y="15" width="105" height="90" fill="#e4f6ee" opacity="0.65"/>
+            <rect x="35" y="105" width="105" height="90" fill="#e4f6ee" opacity="0.65"/>
+            <rect x="140" y="105" width="105" height="90" fill="#fdecec" opacity="0.55"/>
+            <line x1="35" y1="105" x2="245" y2="105" stroke="#8da6b6" stroke-width="1.3"/>
+            <line x1="140" y1="15" x2="140" y2="195" stroke="#8da6b6" stroke-width="1.3"/>
+            <text x="224" y="30" font-size="11" font-weight="700" fill="#086641">+ product</text>
+            <text x="42" y="188" font-size="11" font-weight="700" fill="#086641">+ product</text>
+            <text x="42" y="30" font-size="11" font-weight="700" fill="#a61b1b">− product</text>
+            <text x="182" y="188" font-size="11" font-weight="700" fill="#a61b1b">− product</text>
+            <g id="cov-cloud-dots"></g>
+          </svg>
+          <figcaption class="small" id="cov-cloud-cap">Green quadrants add to Cov(X,Y); red quadrants subtract.</figcaption>
+        </figure>
+        <figure class="viz-card">
+          <h4>Markowitz risk–return curve (Ex. 7.19)</h4>
+          <svg viewBox="0 0 280 220" role="img" aria-labelledby="port-title port-desc">
+            <title id="port-title">Portfolio expected return versus standard deviation</title>
+            <desc id="port-desc">Plots portfolio expected return from 6% to 12% against risk sigma_R, showing how lower correlation bends the frontier left toward lower risk.</desc>
+            <line x1="42" y1="190" x2="258" y2="190" stroke="#8da6b6" stroke-width="1.4"/>
+            <line x1="42" y1="20" x2="42" y2="190" stroke="#8da6b6" stroke-width="1.4"/>
+            <path id="port-ineff" fill="none" stroke="#9aaec0" stroke-width="2.2" stroke-dasharray="4 3"/>
+            <path id="port-eff" fill="none" stroke="#006a70" stroke-width="2.8"/>
+            <circle id="port-a1" cx="142" cy="170" r="4.5" fill="#4c6272"/>
+            <circle id="port-a2" cx="242" cy="35" r="4.5" fill="#4c6272"/>
+            <circle id="port-min" class="svg-anim" cx="120" cy="130" r="4.5" fill="#b55b00"/>
+            <circle id="port-cur" class="svg-anim" cx="120" cy="130" r="6" fill="#143a73" stroke="white" stroke-width="1.5"/>
+            <g font-size="10.5" fill="#2c3e4c" font-family="system-ui, sans-serif">
+              <text x="14" y="40">12%</text><text x="18" y="105">9%</text><text x="18" y="173">6%</text>
+              <text x="39" y="205">0%</text><text x="132" y="205">10%</text><text x="232" y="205">20% σ</text>
+              <text x="50" y="15" fill="#006a70" font-weight="700">— Efficient branch</text>
+              <text x="165" y="15" fill="#143a73" font-weight="700">● Your w</text>
+            </g>
+          </svg>
+          <figcaption class="small">Illustrative assets: μ₁=6%, σ₁=10% and μ₂=12%, σ₂=20%.</figcaption>
+        </figure>
+      </div>
+      <output class="readout-box" id="cov-readout" aria-live="polite"></output>
+      <p class="print-summary"><strong>Correlation &amp; Portfolio summary:</strong> On the unit circle and symmetric parabola, + and − quadrant products cancel so ρ = 0 despite strict dependence. In Markowitz's two-asset model (σ₁ = 10%, σ₂ = 20%), lower ρ bends the risk–return curve left; at ρ = 0, w* = 0.80 cuts portfolio SD to 8.94%, below either asset alone.</p>
+    </div>
     <details>
       <summary>Expectation in series and in parallel: when do you need the joint model? (§7.3)</summary>
       <p>For the resistor pair with joint density <span class="formula">(x+y)e<sup>−x−y</sup>/2</span> on x,y &gt; 0, series resistance is the sum. Each marginal mean is <span class="formula">½∫<sub>0</sub><sup>∞</sup>x(x+1)e<sup>−x</sup> dx = 3/2</span>, so the expected series resistance is 3, even though the variables are dependent.</p>
@@ -371,21 +821,44 @@
   <section id="practice">
     <p class="eyebrow">07 / Retrieval practice</p>
     <h2>Pick the tool before doing the algebra</h2>
-    <p>Try each question on paper first. Then reveal the reasoning.</p>
-    <details><summary>1. Ten percent of devices survive to t, and 2% of the original batch fail in the next hour. What fraction of the survivors fail in that hour?</summary><p><strong>20%.</strong> Those failures come from the survivors, so divide 0.02 by 0.10. This is a one-hour conditional probability, not the instantaneous hazard.</p></details>
-    <details><summary>2. An exam has mean 60 and SD 5. Without assuming normality, bound the chance of a mark at least 10 points away from 60.</summary><p><strong>At most 25%.</strong> Chebyshev gives <span class="formula">P(|X − 60| ≥ 10) ≤ 5²/10² = 1/4</span>.</p></details>
-    <details><summary>3. F(1) = 0.40 and F(2) = 0.85, and X is integer-valued. What is the 75th percentile?</summary><p><strong>2.</strong> At 1 the CDF falls short, and no integer lies between 1 and 2. Look for the first cutoff that reaches or exceeds 0.75.</p></details>
-    <details><summary>4. If Y = 10 − X, which X outcomes satisfy Y ≤ 4?</summary><p><strong>X ≥ 6.</strong> The transformation is decreasing, so the inequality reverses. Keep the equality if X might have an atom at 6.</p></details>
-    <details><summary>5. Two variables have variances 4 and 9 and covariance −2. What is the variance of their sum?</summary><p><strong>9.</strong> Use <span class="formula">4 + 9 + 2(−2) = 9</span>. The negative covariance offsets some of the individual variability.</p></details>
-    <details><summary>6. Four riders choose among three floors independently and uniformly. What is the expected number of stops?</summary><p><strong>65/27, about 2.41.</strong> A given floor is missed with probability (2/3)⁴, so add <span class="formula">1−(2/3)⁴</span> for each of the three floors. The expectation need not be an integer.</p></details>
-    <details><summary>7. For the triangle 0 &lt; y &lt; x &lt; 1 with density 2, find the marginal density of Y and P(Y &gt; 1/2).</summary><p><strong><span class="formula">f<sub>Y</sub>(y)=2(1−y)</span> for 0 &lt; y &lt; 1, and the probability is 1/4.</strong> Use a horizontal slice: at fixed y, x runs from y to 1. Integrate the resulting marginal from 1/2 to 1.</p></details>
-    <details><summary>8. Independent X and Y have χ² distributions with 2 and 5 degrees of freedom. What is the distribution of X + Y? What if independence is not given?</summary><p><strong>χ²(7) under independence.</strong> The MGFs multiply. Without independence, the marginal distributions alone do not determine the distribution of the sum.</p></details>
+    <p>Test your intuition with the quick-check choices first, or open each reasoning drawer directly.</p>
+    <div class="quiz-progress" id="quiz-bar" hidden>
+      <div><strong id="quiz-score">Checked: 0 of 8</strong> <span class="small" id="quiz-note">· Pick an option on any card to check yourself.</span></div>
+      <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="quiz-fill"></div></div>
+      <button type="button" id="quiz-reset">Reset checks</button>
+    </div>
+    <div class="quiz-card" data-q="0"><div class="choice-slot"></div><details><summary>1. Ten percent of devices survive to t, and 2% of the original batch fail in the next hour. What fraction of the survivors fail in that hour?</summary><p><strong>20%.</strong> Those failures come from the survivors, so divide 0.02 by 0.10. This is a one-hour conditional probability, not the instantaneous hazard.</p></details></div>
+    <div class="quiz-card" data-q="1"><div class="choice-slot"></div><details><summary>2. An exam has mean 60 and SD 5. Without assuming normality, bound the chance of a mark at least 10 points away from 60.</summary><p><strong>At most 25%.</strong> Chebyshev gives <span class="formula">P(|X − 60| ≥ 10) ≤ 5²/10² = 1/4</span>.</p></details></div>
+    <div class="quiz-card" data-q="2"><div class="choice-slot"></div><details><summary>3. F(1) = 0.40 and F(2) = 0.85, and X is integer-valued. What is the 75th percentile?</summary><p><strong>2.</strong> At 1 the CDF falls short, and no integer lies between 1 and 2. Look for the first cutoff that reaches or exceeds 0.75.</p></details></div>
+    <div class="quiz-card" data-q="3"><div class="choice-slot"></div><details><summary>4. If Y = 10 − X, which X outcomes satisfy Y ≤ 4?</summary><p><strong>X ≥ 6.</strong> The transformation is decreasing, so the inequality reverses. Keep the equality if X might have an atom at 6.</p></details></div>
+    <div class="quiz-card" data-q="4"><div class="choice-slot"></div><details><summary>5. Two variables have variances 4 and 9 and covariance −2. What is the variance of their sum?</summary><p><strong>9.</strong> Use <span class="formula">4 + 9 + 2(−2) = 9</span>. The negative covariance offsets some of the individual variability.</p></details></div>
+    <div class="quiz-card" data-q="5"><div class="choice-slot"></div><details><summary>6. Four riders choose among three floors independently and uniformly. What is the expected number of stops?</summary><p><strong>65/27, about 2.41.</strong> A given floor is missed with probability (2/3)⁴, so add <span class="formula">1−(2/3)⁴</span> for each of the three floors. The expectation need not be an integer.</p></details></div>
+    <div class="quiz-card" data-q="6"><div class="choice-slot"></div><details><summary>7. For the triangle 0 &lt; y &lt; x &lt; 1 with density 2, find the marginal density of Y and P(Y &gt; 1/2).</summary><p><strong><span class="formula">f<sub>Y</sub>(y)=2(1−y)</span> for 0 &lt; y &lt; 1, and the probability is 1/4.</strong> Use a horizontal slice: at fixed y, x runs from y to 1. Integrate the resulting marginal from 1/2 to 1.</p></details></div>
+    <div class="quiz-card" data-q="7"><div class="choice-slot"></div><details><summary>8. Independent X and Y have χ² distributions with 2 and 5 degrees of freedom. What is the distribution of X + Y? What if independence is not given?</summary><p><strong>χ²(7) under independence.</strong> The MGFs multiply. Without independence, the marginal distributions alone do not determine the distribution of the sum.</p></details></div>
   </section>
 </main>
 <footer>
   <div class="wrap small"><strong>Source:</strong> HKU SDST2601A / STAT2601A, <em>Probability and Statistics I</em> (2026–2027, first semester), Chapter 6, <em>Other Properties of Distributions</em>, and Chapter 7, <em>Multivariate Distributions</em>. The numbered section references point back to the lecture notes. This stand-alone guide uses original explanations and illustrative examples.</div>
 </footer>
 <script>
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  function svgEl(tag, attrs = {}) {
+    const el = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+    return el;
+  }
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+  function normPdf(z) { return Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI); }
+  function normCdf(z) {
+    const sign = z < 0 ? -1 : 1;
+    const x = Math.abs(z) / Math.SQRT2;
+    const t = 1 / (1 + 0.3275911 * x);
+    const erf = 1 - (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t) * Math.exp(-x * x);
+    return 0.5 * (1 + sign * erf);
+  }
+
+  /* --- Lab 05A: Discrete Joint Table --- */
   const controls = document.querySelector('#table-controls');
   const buttons = [...controls.querySelectorAll('button')];
   const answer = document.querySelector('#table-answer');
@@ -401,6 +874,862 @@
   answer.hidden = false;
   document.documentElement.classList.add('enhanced');
 
+  /* --- Lab 01: Survival & Hazard Cohort --- */
+  (() => {
+    const regimes = {
+      exp: { lam: 0.45, beta: 1.0, note: 'Constant hazard (memoryless): even as the surviving batch shrinks, each survivor still faces the exact same 0.45/h failure intensity.' },
+      wearout: { lam: 0.18, beta: 2.0, note: 'Wear-out (Weibull β = 2): hazard λ(t) = 0.36t rises linearly with age, even after density f(t) peaks and drops because fewer items remain.' },
+      burnin: { lam: 0.55, beta: 0.6, note: 'Early burn-in (Weibull β = 0.6): fragile units fail early, so survivors that pass infancy enjoy a steadily decreasing hazard rate.' }
+    };
+    let mode = 'exp';
+    let animId = null;
+    let lastTs = 0;
+
+    const cohortEl = document.querySelector('#surv-cohort');
+    const batEls = Array.from({ length: 20 }, (_, i) => {
+      const d = document.createElement('div');
+      d.className = 'bat at-risk';
+      d.textContent = `#${i + 1}`;
+      cohortEl.appendChild(d);
+      return d;
+    });
+    const slider = document.querySelector('#surv-time');
+    const playBtn = document.querySelector('#surv-play');
+    const modeBtns = [...document.querySelectorAll('#surv-modes button')];
+
+    const tx = t => 42 + (t / 4) * 300;
+    const vy = v => 185 - (clamp(v, 0, 1.5) / 1.5) * 163;
+
+    function evalSurv(m, t) {
+      const { lam, beta } = regimes[m];
+      const s = t <= 0 ? 1 : Math.exp(-lam * Math.pow(t, beta));
+      const tSafe = Math.max(t, 0.04);
+      const h = lam * beta * Math.pow(tSafe, beta - 1);
+      const f = h * Math.exp(-lam * Math.pow(tSafe, beta));
+      return { s, F: 1 - s, f, h };
+    }
+
+    function drawCurves() {
+      let dS = '', dF = '', dH = '';
+      for (let i = 0; i <= 80; i++) {
+        const t = (i / 80) * 4;
+        const { s, f, h } = evalSurv(mode, t);
+        const cmd = i === 0 ? 'M' : 'L';
+        const x = tx(t).toFixed(1);
+        dS += `${cmd}${x} ${vy(s).toFixed(1)} `;
+        dF += `${cmd}${x} ${vy(f).toFixed(1)} `;
+        dH += `${cmd}${x} ${vy(h).toFixed(1)} `;
+      }
+      document.querySelector('#surv-path-s').setAttribute('d', dS);
+      document.querySelector('#surv-path-f').setAttribute('d', dF);
+      document.querySelector('#surv-path-h').setAttribute('d', dH);
+    }
+
+    function renderSurv() {
+      const t = Number(slider.value);
+      const { s, F, f, h } = evalSurv(mode, t);
+      document.querySelector('#surv-t-label').textContent = `${t.toFixed(2)} h`;
+      document.querySelector('#kpi-s').textContent = `${(s * 100).toFixed(1)}%`;
+      document.querySelector('#kpi-f').textContent = `${(F * 100).toFixed(1)}%`;
+      document.querySelector('#kpi-pdf').textContent = f.toFixed(3);
+      document.querySelector('#kpi-haz').textContent = h.toFixed(3);
+
+      let aliveCount = 0;
+      batEls.forEach((el, idx) => {
+        const failed = F >= (idx + 0.5) / 20;
+        el.classList.toggle('failed', failed);
+        el.classList.toggle('at-risk', !failed);
+        if (!failed) aliveCount++;
+      });
+
+      const cx = tx(t).toFixed(1);
+      const cur = document.querySelector('#surv-cursor');
+      cur.setAttribute('x1', cx); cur.setAttribute('x2', cx);
+      const setDot = (sel, val) => {
+        const dot = document.querySelector(sel);
+        dot.setAttribute('cx', cx);
+        dot.setAttribute('cy', vy(val).toFixed(1));
+      };
+      setDot('#surv-dot-s', s);
+      setDot('#surv-dot-f', f);
+      setDot('#surv-dot-h', h);
+
+      const nextRisk = (1 - evalSurv(mode, t + 0.1).s / Math.max(s, 1e-6)) * 100;
+      document.querySelector('#surv-readout').textContent =
+        `At t = ${t.toFixed(2)} h, about ${aliveCount} of 20 batteries remain running. Conditional chance a survivor fails in the next 0.1 h is ${nextRisk.toFixed(1)}% (≈ λ(t)·0.1 = ${(h * 10).toFixed(1)}%). ${regimes[mode].note}`;
+    }
+
+    let playT = Number(slider.value);
+
+    function stopPlay() {
+      if (animId) cancelAnimationFrame(animId);
+      animId = null;
+      lastTs = 0;
+      playBtn.setAttribute('aria-pressed', 'false');
+      playBtn.textContent = '▶ Play timeline';
+    }
+
+    function tick(ts) {
+      if (!lastTs) lastTs = ts;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      playT += dt * 0.85;
+      if (playT >= 4) {
+        playT = 4;
+        slider.value = '4';
+        renderSurv();
+        stopPlay();
+        return;
+      }
+      slider.value = playT.toFixed(2);
+      renderSurv();
+      animId = requestAnimationFrame(tick);
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (animId) { stopPlay(); return; }
+      if (reducedMotion.matches) {
+        const next = Number(slider.value) >= 4 ? 0 : Math.min(4, Number(slider.value) + 0.5);
+        playT = next;
+        slider.value = String(next);
+        renderSurv();
+        return;
+      }
+      playT = Number(slider.value) >= 3.95 ? 0 : Number(slider.value);
+      slider.value = playT.toFixed(2);
+      playBtn.setAttribute('aria-pressed', 'true');
+      playBtn.textContent = '⏸ Pause timeline';
+      animId = requestAnimationFrame(tick);
+    });
+
+    slider.addEventListener('input', () => { stopPlay(); playT = Number(slider.value); renderSurv(); });
+    modeBtns.forEach(btn => btn.addEventListener('click', () => {
+      stopPlay();
+      mode = btn.dataset.surv;
+      modeBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      drawCurves();
+      renderSurv();
+    }));
+
+    drawCurves();
+    renderSurv();
+  })();
+
+  /* --- Lab 02: Indicator Run Scanner & Tail Bounds --- */
+  (() => {
+    let coins = ['H', 'T', 'H', 'H', 'H', 'T', 'T', 'H'];
+    let scanTimer = null;
+    let activeIdx = -1;
+    const track = document.querySelector('#toss-track');
+    const pSlider = document.querySelector('#run-p');
+    const scanBtn = document.querySelector('#run-scan');
+
+    const cols = coins.map((_, i) => {
+      const col = document.createElement('div');
+      col.className = 'toss-col';
+      const ind = document.createElement('span');
+      ind.className = 'ind-pill';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'coin-btn';
+      btn.setAttribute('aria-label', `Flip coin ${i + 1}`);
+      btn.addEventListener('click', () => {
+        stopScan();
+        coins[i] = coins[i] === 'H' ? 'T' : 'H';
+        renderRuns();
+      });
+      col.append(ind, btn);
+      track.appendChild(col);
+      return { col, ind, btn };
+    });
+
+    function stopScan() {
+      if (scanTimer) clearInterval(scanTimer);
+      scanTimer = null;
+      activeIdx = -1;
+      scanBtn.setAttribute('aria-pressed', 'false');
+      scanBtn.textContent = '▶ Scan I₁…I₈';
+      cols.forEach(c => c.col.classList.remove('scanning'));
+    }
+
+    function renderRuns() {
+      let runs = 0;
+      const bits = [];
+      coins.forEach((c, i) => {
+        const startsRun = i === 0 || c !== coins[i - 1] ? 1 : 0;
+        runs += startsRun;
+        bits.push(startsRun);
+        const { col, ind, btn } = cols[i];
+        col.classList.toggle('scanning', i === activeIdx);
+        ind.textContent = `I${i + 1}=${startsRun}`;
+        ind.classList.toggle('one', startsRun === 1);
+        btn.textContent = c;
+        btn.className = `coin-btn ${c === 'H' ? 'heads' : 'tails'}`;
+      });
+      const p = Number(pSlider.value);
+      document.querySelector('#run-p-val').textContent = p.toFixed(2);
+      const expRuns = 1 + 2 * (coins.length - 1) * p * (1 - p);
+      const stepNote = activeIdx >= 0
+        ? (activeIdx === 0 ? 'Toss 1 always starts the first run (I₁ = 1).' : `Toss ${activeIdx + 1} (${coins[activeIdx]}) ${coins[activeIdx] !== coins[activeIdx - 1] ? 'differs from' : 'matches'} toss ${activeIdx} (${coins[activeIdx - 1]}) → I${activeIdx + 1} = ${bits[activeIdx]}.`)
+        : `Sequence ${coins.join('')} has Σ Iᵢ = ${runs} runs (${bits.join(' + ')}).`;
+      document.querySelector('#run-readout').textContent =
+        `${stepNote} With p = ${p.toFixed(2)}, theoretical E[X] = 1 + 14p(1−p) = ${expRuns.toFixed(2)}.`;
+    }
+
+    document.querySelector('#run-preset').addEventListener('click', () => {
+      stopScan();
+      coins = ['H', 'T', 'H', 'H', 'H', 'T', 'T', 'H'];
+      pSlider.value = '0.50';
+      renderRuns();
+    });
+    document.querySelector('#run-random').addEventListener('click', () => {
+      stopScan();
+      const p = Number(pSlider.value);
+      coins = coins.map(() => (Math.random() < p ? 'H' : 'T'));
+      renderRuns();
+    });
+    pSlider.addEventListener('input', () => { stopScan(); renderRuns(); });
+    scanBtn.addEventListener('click', () => {
+      if (scanTimer) { stopScan(); renderRuns(); return; }
+      if (reducedMotion.matches) {
+        activeIdx = (activeIdx + 1) % coins.length;
+        renderRuns();
+        return;
+      }
+      activeIdx = 0;
+      scanBtn.setAttribute('aria-pressed', 'true');
+      scanBtn.textContent = '⏸ Scanning…';
+      renderRuns();
+      scanTimer = setInterval(() => {
+        activeIdx++;
+        if (activeIdx >= coins.length) {
+          stopScan();
+          renderRuns();
+          return;
+        }
+        renderRuns();
+      }, 360);
+    });
+
+    /* Tail bounds */
+    const aSlider = document.querySelector('#bound-a');
+    function gamma25Tail(lamA) {
+      let term = Math.exp(-lamA);
+      let sum = term;
+      for (let k = 1; k <= 24; k++) {
+        term *= lamA / k;
+        sum += term;
+      }
+      return clamp(sum, 0, 1);
+    }
+    function renderBounds() {
+      const a = Number(aSlider.value);
+      const d = a - 10;
+      const k = d / 2;
+      const markov = 10 / a;
+      const cheb = clamp(4 / (d * d), 0, 1);
+      const actual = gamma25Tail(2.5 * a);
+
+      document.querySelector('#bound-a-val').textContent = `${a.toFixed(1)} min (+${k.toFixed(2)}σ)`;
+      document.querySelector('#bar-markov').style.width = `${(markov * 100).toFixed(1)}%`;
+      document.querySelector('#bar-cheb').style.width = `${(cheb * 100).toFixed(1)}%`;
+      document.querySelector('#bar-actual').style.width = `${Math.max(0.6, actual * 100).toFixed(1)}%`;
+      document.querySelector('#val-markov').textContent = `${(markov * 100).toFixed(1)}%`;
+      document.querySelector('#val-cheb').textContent = `${(cheb * 100).toFixed(1)}%`;
+      document.querySelector('#val-actual').textContent = `${(actual * 100).toFixed(1)}%`;
+
+      const winner = cheb < markov
+        ? `Using variance shrinks the ceiling ${(markov / cheb).toFixed(1)}× tighter than Markov alone.`
+        : `Very close to the mean (d = ${d.toFixed(1)} < 2σ), Chebyshev is loose, so Markov gives the smaller cap.`;
+      document.querySelector('#bound-readout').textContent =
+        `For P(X ≥ ${a.toFixed(1)}): Markov uses only μ = 10 → ≤ ${(markov * 100).toFixed(1)}%. Chebyshev uses d = ${d.toFixed(1)} and σ² = 4 → ≤ ${(cheb * 100).toFixed(1)}%. ${winner}`;
+    }
+    aSlider.addEventListener('input', renderBounds);
+    renderRuns();
+    renderBounds();
+  })();
+
+  /* --- Lab 03: Inverse CDF Quantile Laser --- */
+  (() => {
+    const binCdf = [0.16807, 0.52822, 0.83692, 0.96922, 0.99757, 1.0];
+    let qMode = 'mixed';
+    const layer = document.querySelector('#quant-cdf-layer');
+    const pSlider = document.querySelector('#quant-p');
+    const modeBtns = [...document.querySelectorAll('#quant-modes button')];
+    const presetBtns = [...document.querySelectorAll('[data-qpreset]')];
+
+    const qx = x => 46 + (clamp(x, 0, 5) / 5) * 310;
+    const qy = p => 185 - clamp(p, 0, 1) * 160;
+
+    function drawQuantBase() {
+      layer.replaceChildren();
+      if (qMode === 'cont') {
+        let d = '';
+        for (let i = 0; i <= 100; i++) {
+          const x = (i / 100) * 5;
+          const y = 1 - Math.exp(-x);
+          d += `${i === 0 ? 'M' : 'L'}${qx(x).toFixed(1)} ${qy(y).toFixed(1)} `;
+        }
+        layer.appendChild(svgEl('path', { d, fill: 'none', stroke: '#143a73', 'stroke-width': 2.6 }));
+      } else if (qMode === 'disc') {
+        let prev = 0;
+        for (let k = 0; k <= 5; k++) {
+          const cur = binCdf[k];
+          layer.appendChild(svgEl('line', { x1: qx(k), y1: qy(prev), x2: qx(k), y2: qy(cur), stroke: '#9ab0c4', 'stroke-width': 1.6, 'stroke-dasharray': '3 3' }));
+          const nextX = k < 5 ? k + 1 : 5.15;
+          layer.appendChild(svgEl('line', { x1: qx(k), y1: qy(cur), x2: qx(nextX), y2: qy(cur), stroke: '#143a73', 'stroke-width': 2.6 }));
+          if (k > 0) layer.appendChild(svgEl('circle', { cx: qx(k), cy: qy(prev), r: 3.4, fill: 'white', stroke: '#143a73', 'stroke-width': 1.8 }));
+          layer.appendChild(svgEl('circle', { cx: qx(k), cy: qy(cur), r: 3.8, fill: '#143a73' }));
+          prev = cur;
+        }
+      } else {
+        let d = '';
+        for (let i = 0; i <= 50; i++) {
+          const x = (i / 50) * 2;
+          d += `${i === 0 ? 'M' : 'L'}${qx(x).toFixed(1)} ${qy(1 - Math.exp(-x)).toFixed(1)} `;
+        }
+        layer.appendChild(svgEl('path', { d, fill: 'none', stroke: '#143a73', 'stroke-width': 2.6 }));
+        const preJump = 1 - Math.exp(-2);
+        layer.appendChild(svgEl('line', { x1: qx(2), y1: qy(preJump), x2: qx(2), y2: qy(1), stroke: '#006a70', 'stroke-width': 2.2, 'stroke-dasharray': '3 3' }));
+        layer.appendChild(svgEl('line', { x1: qx(2), y1: qy(1), x2: qx(5), y2: qy(1), stroke: '#143a73', 'stroke-width': 2.6 }));
+        layer.appendChild(svgEl('circle', { cx: qx(2), cy: qy(preJump), r: 3.6, fill: 'white', stroke: '#143a73', 'stroke-width': 1.8 }));
+        layer.appendChild(svgEl('circle', { cx: qx(2), cy: qy(1), r: 4.2, fill: '#143a73' }));
+      }
+    }
+
+    function renderQuant() {
+      const p = Number(pSlider.value);
+      document.querySelector('#quant-p-val').textContent = `p = ${p.toFixed(2)} (${Math.round(p * 100)}th percentile)`;
+      let q = 0, fq = 0, msg = '';
+      if (qMode === 'cont') {
+        q = -Math.log(1 - p);
+        fq = p;
+        msg = `Smooth & strictly increasing: the ray hits the curve directly, so solve 1 − e^(−x) = ${p.toFixed(2)} → qₚ = −ln(${(1 - p).toFixed(2)}) = ${q.toFixed(3)}.`;
+      } else if (qMode === 'disc') {
+        q = binCdf.findIndex(v => v >= p - 1e-9);
+        fq = binCdf[q];
+        const prev = q === 0 ? 0 : binCdf[q - 1];
+        msg = `Discrete jump: at x = ${q - 1} the CDF is ${q === 0 ? '0 (below support)' : prev.toFixed(4)} (< ${p.toFixed(2)}), then jumps to ${fq.toFixed(4)} at x = ${q}. Never interpolate—the quantile is the integer ${q}.`;
+      } else {
+        const jumpFloor = 1 - Math.exp(-2);
+        if (p <= jumpFloor) {
+          q = -Math.log(1 - p);
+          fq = p;
+          msg = `Below the truncation cap (p ≤ 0.8647): the ray hits the smooth exponential stretch before x = 2, giving qₚ = −ln(1 − ${p.toFixed(2)}) = ${q.toFixed(3)}.`;
+        } else {
+          q = 2;
+          fq = 1;
+          msg = `Hits the truncation jump at x = 2! Just left of 2, F(x) only reaches 0.8647; at x = 2, point mass e^(−2) ≈ 0.1353 lifts F(2) straight to 1.000, so qₚ = 2.`;
+        }
+      }
+
+      const xPlot = qx(Math.min(q, 5)).toFixed(1);
+      const yPlot = qy(p).toFixed(1);
+      const rayH = document.querySelector('#quant-ray-h');
+      const rayV = document.querySelector('#quant-ray-v');
+      const hit = document.querySelector('#quant-hit');
+      const foot = document.querySelector('#quant-foot');
+      rayH.setAttribute('y1', yPlot); rayH.setAttribute('y2', yPlot); rayH.setAttribute('x2', xPlot);
+      rayV.setAttribute('x1', xPlot); rayV.setAttribute('x2', xPlot); rayV.setAttribute('y1', yPlot);
+      hit.setAttribute('cx', xPlot); hit.setAttribute('cy', yPlot);
+      foot.setAttribute('cx', xPlot);
+
+      document.querySelector('#quant-kpi-p').textContent = p.toFixed(2);
+      document.querySelector('#quant-kpi-q').textContent = Number.isInteger(q) && qMode === 'disc' ? String(q) : q.toFixed(3);
+      document.querySelector('#quant-kpi-fq').textContent = fq.toFixed(3);
+      document.querySelector('#quant-readout').textContent = msg;
+    }
+
+    modeBtns.forEach(btn => btn.addEventListener('click', () => {
+      qMode = btn.dataset.quant;
+      modeBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      drawQuantBase();
+      renderQuant();
+    }));
+    presetBtns.forEach(btn => btn.addEventListener('click', () => {
+      pSlider.value = btn.dataset.qpreset;
+      renderQuant();
+    }));
+    pSlider.addEventListener('input', renderQuant);
+    drawQuantBase();
+    renderQuant();
+  })();
+
+  /* --- Lab 04: Transformation Pre-Image & Stretch --- */
+  (() => {
+    let tMode = 'square';
+    const ySlider = document.querySelector('#trans-y');
+    const modeBtns = [...document.querySelectorAll('#trans-modes button')];
+
+    const xx = x => 36 + ((clamp(x, -3, 3) + 3) / 6) * 320;
+    const xy = p => 95 - (clamp(p, 0, 0.42) / 0.42) * 70;
+    const yx = y => 36 + (clamp(y, 0, 4) / 4) * 320;
+    const yy = p => 230 - (clamp(p, 0, 1.2) / 1.2) * 68;
+
+    let dNorm = '';
+    for (let i = 0; i <= 90; i++) {
+      const x = -3 + (i / 90) * 6;
+      dNorm += `${i === 0 ? 'M' : 'L'}${xx(x).toFixed(1)} ${xy(normPdf(x)).toFixed(1)} `;
+    }
+    document.querySelector('#trans-x-curve').setAttribute('d', dNorm);
+
+    function areaPathX(a, b) {
+      const lo = clamp(a, -3, 3), hi = clamp(b, -3, 3);
+      if (hi <= lo) return '';
+      let d = `M${xx(lo).toFixed(1)} 95 `;
+      for (let i = 0; i <= 40; i++) {
+        const x = lo + (i / 40) * (hi - lo);
+        d += `L${xx(x).toFixed(1)} ${xy(normPdf(x)).toFixed(1)} `;
+      }
+      return `${d}L${xx(hi).toFixed(1)} 95 Z`;
+    }
+
+    function yPdf(y) {
+      if (y <= 0) return 0;
+      return tMode === 'square' ? normPdf(Math.sqrt(y)) / Math.sqrt(y) : normPdf(Math.log(y)) / y;
+    }
+
+    function drawYCurve() {
+      let d = '';
+      for (let i = 1; i <= 100; i++) {
+        const y = (i / 100) * 4;
+        d += `${i === 1 ? 'M' : 'L'}${yx(y).toFixed(1)} ${yy(yPdf(y)).toFixed(1)} `;
+      }
+      document.querySelector('#trans-y-curve').setAttribute('d', d);
+      document.querySelector('#trans-y-title').textContent =
+        tMode === 'square' ? 'Transformed Y = X² ∼ χ²(1) on (0, ∞)' : 'Transformed Y = eˣ (Log-normal) on (0, ∞)';
+    }
+
+    function renderTrans() {
+      const y = Number(ySlider.value);
+      document.querySelector('#trans-y-val').textContent = `y = ${y.toFixed(2)}`;
+      let dYShade = `M${yx(0.03).toFixed(1)} 230 `;
+      for (let i = 1; i <= 50; i++) {
+        const u = 0.03 + (i / 50) * Math.max(0, y - 0.03);
+        dYShade += `L${yx(u).toFixed(1)} ${yy(yPdf(u)).toFixed(1)} `;
+      }
+      dYShade += `L${yx(y).toFixed(1)} 230 Z`;
+      document.querySelector('#trans-y-shade').setAttribute('d', dYShade);
+      const yMark = yx(y).toFixed(1);
+      const marker = document.querySelector('#trans-y-marker');
+      marker.setAttribute('x1', yMark); marker.setAttribute('x2', yMark);
+
+      const pdfVal = yPdf(y);
+      document.querySelector('#trans-kpi-pdf').textContent = pdfVal.toFixed(3);
+
+      if (tMode === 'square') {
+        const r = Math.sqrt(y);
+        const fy = 2 * normCdf(r) - 1;
+        const halfOnly = normCdf(r) - 0.5;
+        document.querySelector('#trans-x-shade-neg').setAttribute('d', areaPathX(-r, 0));
+        document.querySelector('#trans-x-shade-pos').setAttribute('d', areaPathX(0, r));
+        document.querySelector('#trans-arrow-1').setAttribute('d', `M${xx(r).toFixed(1)} 97 C${xx(r).toFixed(1)} 124, ${yMark} 126, ${yMark} 160`);
+        document.querySelector('#trans-arrow-2').setAttribute('d', `M${xx(-r).toFixed(1)} 97 C${xx(-r).toFixed(1)} 126, ${yMark} 126, ${yMark} 160`);
+        document.querySelector('#trans-kpi-pre').textContent = `[−${r.toFixed(2)}, +${r.toFixed(2)}]`;
+        document.querySelector('#trans-kpi-fy').textContent = `${(fy * 100).toFixed(1)}%`;
+        document.querySelector('#trans-readout').textContent =
+          `Two-branch folding: both [−${r.toFixed(2)}, 0] (${(halfOnly * 100).toFixed(1)}%, amber) and [0, +${r.toFixed(2)}] (${(halfOnly * 100).toFixed(1)}%, teal) square into [0, ${y.toFixed(2)}], totaling ${(fy * 100).toFixed(1)}%. Forgetting −√y misses half the probability!`;
+      } else {
+        const lx = Math.log(y);
+        const fy = normCdf(lx);
+        document.querySelector('#trans-x-shade-neg').setAttribute('d', '');
+        document.querySelector('#trans-x-shade-pos').setAttribute('d', areaPathX(-3, lx));
+        document.querySelector('#trans-arrow-1').setAttribute('d', `M${xx(lx).toFixed(1)} 97 C${xx(lx).toFixed(1)} 124, ${yMark} 126, ${yMark} 160`);
+        document.querySelector('#trans-arrow-2').setAttribute('d', '');
+        document.querySelector('#trans-kpi-pre').textContent = `(−∞, ${lx.toFixed(2)}]`;
+        document.querySelector('#trans-kpi-fy').textContent = `${(fy * 100).toFixed(1)}%`;
+        const jac = 1 / y;
+        document.querySelector('#trans-readout').textContent =
+          `Strictly increasing 1-to-1 map: Y ≤ ${y.toFixed(2)} ⇔ X ≤ ln(${y.toFixed(2)}) = ${lx.toFixed(2)}. Jacobian |dx/dy| = 1/y = ${jac.toFixed(2)} ${y < 1 ? 'concentrates (>1)' : 'stretches (<1)'} the original density φ(ln y) = ${normPdf(lx).toFixed(3)} into f_Y(y) = ${pdfVal.toFixed(3)}.`;
+      }
+    }
+
+    modeBtns.forEach(btn => btn.addEventListener('click', () => {
+      tMode = btn.dataset.trans;
+      modeBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      drawYCurve();
+      renderTrans();
+    }));
+    ySlider.addEventListener('input', renderTrans);
+    drawYCurve();
+    renderTrans();
+  })();
+
+  /* --- Lab 05B: Continuous 2D Support Slicer --- */
+  (() => {
+    let sModel = 'triangle';
+    let sOp = 'vx';
+    const posSlider = document.querySelector('#slice-pos');
+    const g2d = document.querySelector('#slice-2d-layer');
+    const g1d = document.querySelector('#slice-1d-layer');
+    const modelBtns = [...document.querySelectorAll('#slice-models button')];
+    const opBtns = [...document.querySelectorAll('#slice-ops button')];
+
+    function diskCdfDiag(c) {
+      if (c <= -1) return 0;
+      const n = 160;
+      const hi = Math.min(c, 1);
+      const dx = (hi + 1) / n;
+      let area = 0;
+      for (let i = 0; i < n; i++) {
+        const x = -1 + (i + 0.5) * dx;
+        const r = Math.sqrt(Math.max(0, 1 - x * x));
+        const len = Math.max(0, Math.min(c, r) - (-r));
+        area += len * dx;
+      }
+      return clamp(area / Math.PI, 0, 1);
+    }
+
+    function renderSlice() {
+      g2d.replaceChildren();
+      g1d.replaceChildren();
+      const raw = Number(posSlider.value);
+      const u = sModel === 'disk' ? Number((-1 + 2 * raw).toFixed(2)) : raw;
+
+      const labelPrefix = sOp === 'vx' ? '3. Fixed x =' : (sOp === 'hy' ? '3. Fixed y =' : '3. Cutoff c =');
+      document.querySelector('#slice-slider-name').textContent = labelPrefix;
+      document.querySelector('#slice-pos-val').textContent = u.toFixed(2);
+
+      // 2D Coordinate helpers
+      const mapX = v => sModel === 'disk' ? 160 + v * 82 : 55 + v * 175;
+      const mapY = v => sModel === 'disk' ? 112 - v * 82 : 185 - v * 155;
+
+      const add2dTxt = (x, y, txt, weight = 600) => {
+        const t = svgEl('text', { x, y, fill: '#4c6272', 'font-size': 11, 'font-weight': weight });
+        t.textContent = txt;
+        g2d.appendChild(t);
+      };
+
+      // Draw support & axes
+      if (sModel === 'triangle') {
+        g2d.appendChild(svgEl('path', { d: `M${mapX(0)} ${mapY(0)} L${mapX(1)} ${mapY(0)} L${mapX(1)} ${mapY(1)} Z`, fill: '#d5eee9', stroke: '#006a70', 'stroke-width': 2 }));
+        g2d.appendChild(svgEl('path', { d: `M55 18 V185 H252`, fill: 'none', stroke: '#143a73', 'stroke-width': 1.8 }));
+        const lbl = svgEl('text', { x: 96, y: 92, fill: '#17262f', 'font-size': 13, 'font-weight': 700 }); lbl.textContent = 'y = x'; g2d.appendChild(lbl);
+        add2dTxt(44, 196, '0'); add2dTxt(226, 200, '1'); add2dTxt(40, 34, '1'); add2dTxt(257, 189, 'x', 700); add2dTxt(42, 16, 'y', 700);
+        document.querySelector('#slice-2d-cap').textContent = 'Triangle 0 < y < x < 1, f = 2 (slanted boundary → dependent).';
+      } else if (sModel === 'square') {
+        g2d.appendChild(svgEl('rect', { x: mapX(0), y: mapY(1), width: 175, height: 155, fill: '#ddeaf9', stroke: '#143a73', 'stroke-width': 2 }));
+        g2d.appendChild(svgEl('path', { d: `M55 18 V185 H252`, fill: 'none', stroke: '#143a73', 'stroke-width': 1.8 }));
+        add2dTxt(44, 196, '0'); add2dTxt(226, 200, '1'); add2dTxt(40, 34, '1'); add2dTxt(257, 189, 'x', 700); add2dTxt(42, 16, 'y', 700);
+        document.querySelector('#slice-2d-cap').textContent = 'Unit Square [0,1]², f(x,y) = 4x(1−y) (rectangular + factors → independent).';
+      } else {
+        g2d.appendChild(svgEl('circle', { cx: 160, cy: 112, r: 82, fill: '#e8e4fb', stroke: '#5423c7', 'stroke-width': 2 }));
+        g2d.appendChild(svgEl('line', { x1: 62, y1: 112, x2: 258, y2: 112, stroke: '#143a73', 'stroke-width': 1.5 }));
+        g2d.appendChild(svgEl('line', { x1: 160, y1: 18, x2: 160, y2: 204, stroke: '#143a73', 'stroke-width': 1.5 }));
+        add2dTxt(60, 126, '−1'); add2dTxt(244, 126, '1'); add2dTxt(262, 116, 'x', 700); add2dTxt(165, 22, 'y', 700);
+        document.querySelector('#slice-2d-cap').textContent = 'Unit Disk x² + y² ≤ 1, f = 1/π (curved boundary → dependent!).';
+      }
+
+      // Active 2D slice / region + 1D curve calculation
+      let val = 0, max1D = 2.1, formulaText = '';
+      if (sModel === 'triangle') {
+        if (sOp === 'vx') {
+          g2d.appendChild(svgEl('line', { x1: mapX(u), y1: mapY(0), x2: mapX(u), y2: mapY(u), stroke: '#b55b00', 'stroke-width': 3.5 }));
+          g2d.appendChild(svgEl('circle', { cx: mapX(u), cy: mapY(u), r: 4.5, fill: '#b55b00' }));
+          val = 2 * u;
+          formulaText = `Hold x = ${u.toFixed(2)}: y runs from 0 up to x = ${u.toFixed(2)} (moving upper limit!). f_X(${u.toFixed(2)}) = ∫₀^${u.toFixed(2)} 2 dy = ${val.toFixed(2)}.`;
+        } else if (sOp === 'hy') {
+          g2d.appendChild(svgEl('line', { x1: mapX(u), y1: mapY(u), x2: mapX(1), y2: mapY(u), stroke: '#b55b00', 'stroke-width': 3.5 }));
+          g2d.appendChild(svgEl('circle', { cx: mapX(u), cy: mapY(u), r: 4.5, fill: '#b55b00' }));
+          val = 2 * (1 - u);
+          formulaText = `Hold y = ${u.toFixed(2)}: x starts at y = ${u.toFixed(2)} and runs to 1. f_Y(${u.toFixed(2)}) = ∫_${u.toFixed(2)}^1 2 dx = ${val.toFixed(2)}.`;
+        } else {
+          g2d.appendChild(svgEl('path', { d: `M${mapX(0)} ${mapY(0)} L${mapX(u)} ${mapY(0)} L${mapX(u)} ${mapY(u)} Z`, fill: '#f6ad55', opacity: 0.72, stroke: '#b55b00', 'stroke-width': 2 }));
+          val = u * u; max1D = 1.05;
+          formulaText = `Joint CDF F(${u.toFixed(2)}, ${u.toFixed(2)}): shaded sub-triangle has area ½(${u.toFixed(2)})², times density 2 → F = ${val.toFixed(3)}.`;
+        }
+      } else if (sModel === 'square') {
+        if (sOp === 'vx') {
+          g2d.appendChild(svgEl('line', { x1: mapX(u), y1: mapY(0), x2: mapX(u), y2: mapY(1), stroke: '#b55b00', 'stroke-width': 3.5 }));
+          val = 2 * u;
+          formulaText = `Hold x = ${u.toFixed(2)}: y ALWAYS runs 0 to 1! f_X(${u.toFixed(2)}) = ∫₀¹ 4(${u.toFixed(2)})(1−y) dy = 2x = ${val.toFixed(2)}.`;
+        } else if (sOp === 'hy') {
+          g2d.appendChild(svgEl('line', { x1: mapX(0), y1: mapY(u), x2: mapX(1), y2: mapY(u), stroke: '#b55b00', 'stroke-width': 3.5 }));
+          val = 2 * (1 - u);
+          formulaText = `Hold y = ${u.toFixed(2)}: x ALWAYS runs 0 to 1! f_Y(${u.toFixed(2)}) = ∫₀¹ 4x(1−${u.toFixed(2)}) dx = 2(1−y) = ${val.toFixed(2)}. Note f_X·f_Y = 4x(1−y) = f(x,y)!`;
+        } else {
+          g2d.appendChild(svgEl('rect', { x: mapX(0), y: mapY(u), width: 175 * u, height: 155 * u, fill: '#f6ad55', opacity: 0.68, stroke: '#b55b00', 'stroke-width': 2 }));
+          val = u * u * (2 * u - u * u); max1D = 1.05;
+          formulaText = `Joint CDF F(${u.toFixed(2)}, ${u.toFixed(2)}) = x²(2y − y²) = ${val.toFixed(3)} (Ex. 7.7).`;
+        }
+      } else {
+        const chord = Math.sqrt(Math.max(0, 1 - u * u));
+        if (sOp === 'vx') {
+          g2d.appendChild(svgEl('line', { x1: mapX(u), y1: mapY(-chord), x2: mapX(u), y2: mapY(chord), stroke: '#b55b00', 'stroke-width': 3.5 }));
+          val = (2 / Math.PI) * chord; max1D = 0.8;
+          formulaText = `Hold x = ${u.toFixed(2)}: vertical chord runs −√(1−x²) to +√(1−x²) (length ${(2 * chord).toFixed(2)}). f_X(${u.toFixed(2)}) = (2/π)√(1−x²) = ${val.toFixed(3)}.`;
+        } else if (sOp === 'hy') {
+          g2d.appendChild(svgEl('line', { x1: mapX(-chord), y1: mapY(u), x2: mapX(chord), y2: mapY(u), stroke: '#b55b00', 'stroke-width': 3.5 }));
+          val = (2 / Math.PI) * chord; max1D = 0.8;
+          formulaText = `Hold y = ${u.toFixed(2)}: horizontal chord length is ${(2 * chord).toFixed(2)}. f_Y(${u.toFixed(2)}) = (2/π)√(1−y²) = ${val.toFixed(3)}. Constant joint density gave non-uniform marginals!`;
+        } else {
+          const clipId = 'disk-cdf-clip';
+          const defs = svgEl('defs');
+          const cp = svgEl('clipPath', { id: clipId });
+          cp.appendChild(svgEl('circle', { cx: 160, cy: 112, r: 82 }));
+          defs.appendChild(cp);
+          g2d.appendChild(defs);
+          g2d.appendChild(svgEl('rect', { x: 78, y: mapY(u), width: Math.max(0, mapX(u) - 78), height: Math.max(0, 194 - mapY(u)), fill: '#f6ad55', opacity: 0.72, 'clip-path': `url(#${clipId})` }));
+          val = diskCdfDiag(u); max1D = 1.05;
+          formulaText = `Joint CDF F(${u.toFixed(2)}, ${u.toFixed(2)}): disk area bottom-left of (${u.toFixed(2)}, ${u.toFixed(2)}) divided by π → ${val.toFixed(3)}.`;
+        }
+      }
+
+      // Draw 1D synchronized curve
+      g1d.appendChild(svgEl('line', { x1: 38, y1: 128, x2: 298, y2: 128, stroke: '#8da6b6', 'stroke-width': 1.4 }));
+      g1d.appendChild(svgEl('line', { x1: 38, y1: 18, x2: 38, y2: 128, stroke: '#8da6b6', 'stroke-width': 1.4 }));
+      let d1 = '';
+      for (let i = 0; i <= 60; i++) {
+        const frac = i / 60;
+        const coord = sModel === 'disk' ? -1 + 2 * frac : frac;
+        let cv = 0;
+        if (sModel === 'triangle') cv = sOp === 'vx' ? 2 * coord : (sOp === 'hy' ? 2 * (1 - coord) : coord * coord);
+        else if (sModel === 'square') cv = sOp === 'vx' ? 2 * coord : (sOp === 'hy' ? 2 * (1 - coord) : coord * coord * (2 * coord - coord * coord));
+        else cv = sOp === 'cdf' ? diskCdfDiag(coord) : (2 / Math.PI) * Math.sqrt(Math.max(0, 1 - coord * coord));
+        const px = 38 + frac * 260;
+        const py = 128 - (cv / max1D) * 102;
+        d1 += `${i === 0 ? 'M' : 'L'}${px.toFixed(1)} ${py.toFixed(1)} `;
+      }
+      g1d.appendChild(svgEl('path', { d: d1, fill: 'none', stroke: '#143a73', 'stroke-width': 2.5 }));
+      const curX = 38 + raw * 260;
+      const curY = 128 - (val / max1D) * 102;
+      g1d.appendChild(svgEl('line', { x1: curX, y1: curY, x2: curX, y2: 128, stroke: '#b55b00', 'stroke-width': 2, 'stroke-dasharray': '4 3' }));
+      g1d.appendChild(svgEl('circle', { cx: curX, cy: curY, r: 4.8, fill: '#b55b00' }));
+      const title1d = svgEl('text', { x: 46, y: 15, fill: '#143a73', 'font-size': 11.5, 'font-weight': 700 });
+      title1d.textContent = sOp === 'vx' ? 'Marginal f_X(x)' : (sOp === 'hy' ? 'Marginal f_Y(y)' : 'Diagonal Joint CDF F(c, c)');
+      g1d.appendChild(title1d);
+      const loTxt = svgEl('text', { x: 34, y: 144, fill: '#4c6272', 'font-size': 10.5 });
+      loTxt.textContent = sModel === 'disk' ? '−1' : '0';
+      const hiTxt = svgEl('text', { x: 292, y: 144, fill: '#4c6272', 'font-size': 10.5 });
+      hiTxt.textContent = '1';
+      g1d.append(loTxt, hiTxt);
+
+      document.querySelector('#slice-readout').textContent = formulaText;
+    }
+
+    modelBtns.forEach(btn => btn.addEventListener('click', () => {
+      sModel = btn.dataset.smodel;
+      modelBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      renderSlice();
+    }));
+    opBtns.forEach(btn => btn.addEventListener('click', () => {
+      sOp = btn.dataset.sop;
+      opBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      renderSlice();
+    }));
+    posSlider.addEventListener('input', renderSlice);
+    renderSlice();
+  })();
+
+  /* --- Lab 06: Correlation Traps & Markowitz Frontier --- */
+  (() => {
+    let cPat = 'linear';
+    const rhoSlider = document.querySelector('#cov-rho');
+    const wSlider = document.querySelector('#cov-w');
+    const patBtns = [...document.querySelectorAll('#cov-patterns button')];
+    const dotsLayer = document.querySelector('#cov-cloud-dots');
+
+    const halton = (idx, base) => {
+      let f = 1, r = 0, n = idx;
+      while (n > 0) { f /= base; r += f * (n % base); n = Math.floor(n / base); }
+      return r;
+    };
+    const rawPts = Array.from({ length: 36 }, (_, i) => {
+      const u1 = clamp(halton(i + 1, 2), 0.05, 0.95);
+      const u2 = halton(i + 1, 3);
+      const rad = Math.sqrt(-2 * Math.log(u1)) * 0.62;
+      return { x: rad * Math.cos(2 * Math.PI * u2), y: rad * Math.sin(2 * Math.PI * u2) };
+    });
+    const mx = rawPts.reduce((s, p) => s + p.x, 0) / 36;
+    const my = rawPts.reduce((s, p) => s + p.y, 0) / 36;
+    const seeds = rawPts.map((p, i) => ({
+      z1: p.x - mx,
+      z2: p.y - my,
+      angle: (2 * Math.PI * i) / 36,
+      grid: -1.45 + (2.9 * i) / 35
+    }));
+
+    const dotEls = seeds.map(() => {
+      const c = svgEl('circle', { cx: 140, cy: 105, r: 3.8, class: 'svg-anim', fill: '#143a73' });
+      dotsLayer.appendChild(c);
+      return c;
+    });
+
+    function minVarWeight(rho) {
+      const c = 200 * rho;
+      return clamp((400 - c) / (500 - 2 * c), 0, 1);
+    }
+
+    function renderCov() {
+      const rho = cPat === 'linear' ? Number(rhoSlider.value) : 0;
+      rhoSlider.disabled = cPat !== 'linear';
+      document.querySelector('#cov-rho-val').textContent = cPat === 'linear' ? rho.toFixed(2) : '0.00 (trap)';
+
+      // Cloud coordinates
+      seeds.forEach((s, i) => {
+        let x = 0, y = 0;
+        if (cPat === 'linear') {
+          x = s.z1;
+          y = rho * s.z1 + Math.sqrt(Math.max(0, 1 - rho * rho)) * s.z2;
+        } else if (cPat === 'circle') {
+          x = 1.25 * Math.cos(s.angle);
+          y = 1.25 * Math.sin(s.angle);
+        } else {
+          x = s.grid;
+          y = (s.grid * s.grid - 0.75) * 1.05;
+        }
+        const cx = 140 + clamp(x, -1.75, 1.75) * 54;
+        const cy = 105 - clamp(y, -1.55, 1.55) * 52;
+        dotEls[i].setAttribute('cx', cx.toFixed(1));
+        dotEls[i].setAttribute('cy', cy.toFixed(1));
+        dotEls[i].setAttribute('fill', x * y >= 0 ? '#086641' : '#a61b1b');
+      });
+
+      document.querySelector('#cov-cloud-cap').textContent =
+        cPat === 'linear'
+          ? `Linear mode (ρ = ${rho.toFixed(2)}): ${rho > 0.05 ? 'green (+)' : (rho < -0.05 ? 'red (−)' : 'balanced')} quadrant products dominate.`
+          : (cPat === 'circle'
+            ? 'Ex. 7.22 Unit Circle: X² + Y² = 1 (strictly dependent!), yet symmetric + and − quadrants cancel to ρ = 0.'
+            : 'Parabola Y = X²: knowing X fixes Y completely, yet left/right symmetry cancels E[XY] − E[X]E[Y] to 0.');
+
+      // Markowitz curve (Asset 1: mu=6, sd=10; Asset 2: mu=12, sd=20)
+      const px = sd => 42 + (clamp(sd, 0, 21.5) / 20) * 200;
+      const py = mu => 190 - ((mu - 5.2) / 7.5) * 165;
+      const wStar = minVarWeight(rho);
+      let dEff = '', dIneff = '';
+      for (let i = 0; i <= 60; i++) {
+        const w = i / 60;
+        const mu = 6 * w + 12 * (1 - w);
+        const sd = Math.sqrt(Math.max(0, 100 * w * w + 400 * (1 - w) * (1 - w) + 400 * rho * w * (1 - w)));
+        const pt = `${px(sd).toFixed(1)} ${py(mu).toFixed(1)} `;
+        if (w <= wStar + 1e-6) dEff += `${dEff ? 'L' : 'M'}${pt}`;
+        if (w >= wStar - 1e-6) dIneff += `${dIneff ? 'L' : 'M'}${pt}`;
+      }
+      document.querySelector('#port-eff').setAttribute('d', dEff);
+      document.querySelector('#port-ineff').setAttribute('d', dIneff);
+      document.querySelector('#port-a1').setAttribute('cx', px(10).toFixed(1));
+      document.querySelector('#port-a1').setAttribute('cy', py(6).toFixed(1));
+      document.querySelector('#port-a2').setAttribute('cx', px(20).toFixed(1));
+      document.querySelector('#port-a2').setAttribute('cy', py(12).toFixed(1));
+
+      const minMu = 6 * wStar + 12 * (1 - wStar);
+      const minSd = Math.sqrt(Math.max(0, 100 * wStar * wStar + 400 * (1 - wStar) * (1 - wStar) + 400 * rho * wStar * (1 - wStar)));
+      document.querySelector('#port-min').setAttribute('cx', px(minSd).toFixed(1));
+      document.querySelector('#port-min').setAttribute('cy', py(minMu).toFixed(1));
+
+      const w = Number(wSlider.value);
+      document.querySelector('#cov-w-val').textContent = `w = ${w.toFixed(2)}`;
+      const curMu = 6 * w + 12 * (1 - w);
+      const curVar = 100 * w * w + 400 * (1 - w) * (1 - w) + 400 * rho * w * (1 - w);
+      const curSd = Math.sqrt(Math.max(0, curVar));
+      document.querySelector('#port-cur').setAttribute('cx', px(curSd).toFixed(1));
+      document.querySelector('#port-cur').setAttribute('cy', py(curMu).toFixed(1));
+
+      const effTag = w <= wStar + 0.01 ? 'Efficient upper branch' : 'Inefficient lower branch (same risk can earn higher return!)';
+      document.querySelector('#cov-readout').textContent =
+        `With ρ = ${rho.toFixed(2)} (Cov = ${(200 * rho).toFixed(0)}) and weight w = ${w.toFixed(2)}: E[R] = ${curMu.toFixed(2)}%, SD σ_R = ${curSd.toFixed(2)}% (${effTag}). Minimum-variance weight is w* = ${wStar.toFixed(2)} giving σ₀ = ${minSd.toFixed(2)}%.`;
+    }
+
+    patBtns.forEach(btn => btn.addEventListener('click', () => {
+      cPat = btn.dataset.cpat;
+      patBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      renderCov();
+    }));
+    rhoSlider.addEventListener('input', renderCov);
+    wSlider.addEventListener('input', renderCov);
+    document.querySelector('#cov-minvar').addEventListener('click', () => {
+      const rho = cPat === 'linear' ? Number(rhoSlider.value) : 0;
+      wSlider.value = minVarWeight(rho).toFixed(2);
+      renderCov();
+    });
+    renderCov();
+  })();
+
+  /* --- Section 07: Interactive Practice Quiz --- */
+  (() => {
+    const quizData = [
+      { opts: ['2%', '20%', '10%'], ans: 1, hint: 'Condition on the 10% who survived to t: 0.02 / 0.10.' },
+      { opts: ['≤ 25%', '≤ 50%', '≤ 5%'], ans: 0, hint: 'Chebyshev: d = 10 = 2σ, so σ²/d² = 25/100.' },
+      { opts: ['1', '1.78', '2'], ans: 2, hint: 'First integer x where F(x) ≥ 0.75 is 2.' },
+      { opts: ['X ≤ 6', 'X ≥ 6', 'X ≥ −6'], ans: 1, hint: '10 − X ≤ 4 flips the inequality when isolating X.' },
+      { opts: ['9', '13', '17'], ans: 0, hint: 'Var(X+Y) = 4 + 9 + 2(−2) = 9.' },
+      { opts: ['2.00', '65/27 ≈ 2.41', '3.00'], ans: 1, hint: 'Sum 3 floor indicators: 3 × [1 − (2/3)⁴] = 65/27.' },
+      { opts: ['1/4', '1/2', '3/4'], ans: 0, hint: 'Horizontal slice gives f_Y(y)=2(1−y); integrate from 1/2 to 1.' },
+      { opts: ['Always χ²(7)', 'χ²(7) only if independent', 'χ²(10)'], ans: 1, hint: 'MGF product rule requires independence.' }
+    ];
+    const solved = new Set();
+    const bar = document.querySelector('#quiz-bar');
+    const scoreEl = document.querySelector('#quiz-score');
+    const fillEl = document.querySelector('#quiz-fill');
+    const noteEl = document.querySelector('#quiz-note');
+    bar.hidden = false;
+
+    function updateProgress() {
+      scoreEl.textContent = `Checked: ${solved.size} of ${quizData.length}`;
+      fillEl.style.width = `${(solved.size / quizData.length) * 100}%`;
+      noteEl.textContent = solved.size === quizData.length
+        ? '· All 8 mastered! Open any drawer to review full proofs.'
+        : '· Pick an option on any card to test your first instinct.';
+    }
+
+    const cards = [...document.querySelectorAll('.quiz-card')];
+    cards.forEach((card, qIdx) => {
+      const slot = card.querySelector('.choice-slot');
+      const summary = card.querySelector('summary');
+      const qTitle = document.createElement('p');
+      qTitle.className = 'quiz-q';
+      qTitle.textContent = summary.textContent;
+      summary.textContent = 'Show step-by-step reasoning';
+
+      const row = document.createElement('div');
+      row.className = 'choice-row';
+      const fb = document.createElement('div');
+      fb.className = 'quiz-feedback';
+      fb.setAttribute('aria-live', 'polite');
+
+      const { opts, ans, hint } = quizData[qIdx];
+      const optBtns = opts.map((label, oIdx) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'choice-btn';
+        b.textContent = label;
+        b.addEventListener('click', () => {
+          optBtns.forEach(x => x.classList.remove('correct', 'wrong'));
+          if (oIdx === ans) {
+            b.classList.add('correct');
+            card.classList.add('solved');
+            solved.add(qIdx);
+            fb.className = 'quiz-feedback ok';
+            fb.textContent = `✓ Spot on! ${hint}`;
+          } else {
+            b.classList.add('wrong');
+            fb.className = 'quiz-feedback retry';
+            fb.textContent = `Not quite — think about the setup first (${hint})`;
+          }
+          updateProgress();
+        });
+        row.appendChild(b);
+        return b;
+      });
+
+      slot.append(qTitle, row, fb);
+    });
+
+    document.querySelector('#quiz-reset').addEventListener('click', () => {
+      solved.clear();
+      cards.forEach(card => {
+        card.classList.remove('solved');
+        card.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('correct', 'wrong'));
+        const fb = card.querySelector('.quiz-feedback');
+        fb.textContent = '';
+        fb.className = 'quiz-feedback';
+      });
+      updateProgress();
+    });
+    updateProgress();
+  })();
+
+  /* --- Sticky Nav & Print State --- */
   const nav = document.querySelector('.nav');
   const links = [...nav.querySelectorAll('a')];
   const sections = links.map(link => document.querySelector(link.hash));
